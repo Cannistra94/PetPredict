@@ -1,0 +1,128 @@
+# Base directory containing subfolders named after patient IDs
+base_directory = "images"
+
+# Path to the CSV file
+csv_file_path = 'patient_data.csv'
+
+# Read the CSV file
+df = pd.read_csv(csv_file_path)
+
+# Print the number of rows
+num_rows = len(df)
+
+# Calculate mean and standard deviation of the 'Target' column
+mean_target = df['Target'].mean()
+std_target = df['Target'].std()
+
+# Write the results to the output text file
+output_txt_path = "output.txt"
+with open(output_txt_path, "a") as file:
+    file.write(f"Number of Subjects: {num_rows}\n")
+    file.write(f"Mean of 'Target' Column: {mean_target}\n")
+    file.write(f"Standard Deviation of 'Target' Column: {std_target}\n\n")
+# Read the CSV file
+df = pd.read_csv(csv_file_path)
+
+# Initialize an empty DataFrame to store the results
+results_df = pd.DataFrame(columns=[
+    'Patient ID', '3D Shape', 'Patient Name', 'Institution', 'Study Date',
+    'Modality', 'Manufacturer', 'Body Part Examined', 'Age', 'Sex'
+])
+
+age_list = []
+female_count = 0  # Counter for the number of 'F' in Sex
+
+for index, row in df.iterrows():
+    patient_id = row['Patient ID']
+    patient_folder_path = os.path.join(base_directory, patient_id)
+
+    if os.path.exists(patient_folder_path):
+        dicom_files = [f for f in os.listdir(patient_folder_path) if f.endswith('.dcm')]
+        slices = []
+        patient_name = institution_name = study_date = None
+        modality = manufacturer = body_part_examined = None
+        age = sex = None
+
+        for file in sorted(dicom_files):
+            file_path = os.path.join(patient_folder_path, file)
+            dicom_image = pydicom.dcmread(file_path)
+            slices.append(dicom_image.pixel_array)
+
+            if patient_name is None:
+                patient_name = getattr(dicom_image, 'PatientName', None)
+            if institution_name is None:
+                institution_name = getattr(dicom_image, 'InstitutionName', None)
+            if study_date is None:
+                study_date = getattr(dicom_image, 'StudyDate', None)
+            if modality is None:
+                modality = getattr(dicom_image, 'Modality', None)
+            if manufacturer is None:
+                manufacturer = getattr(dicom_image, 'Manufacturer', None)
+            if body_part_examined is None:
+                body_part_examined = getattr(dicom_image, 'BodyPartExamined', None)
+
+            # Extracting age and sex
+            if age is None:
+                age_str = getattr(dicom_image, 'PatientAge', None)
+                if age_str:
+                    # Extract numeric part from the age string using regular expression
+                    age_numeric = re.search(r'\d+', age_str)
+                    age = int(age_numeric.group()) if age_numeric else None
+
+            if sex is None:
+                sex = getattr(dicom_image, 'PatientSex', None)
+
+        age_list.append(age)  # Store age in the list
+
+        # Count occurrences of 'F' in Sex
+        if sex == 'F':
+            female_count += 1
+
+        shape_text = str(np.stack(slices).shape) if slices else "No DICOM files found"
+
+        new_row = {
+            'Patient ID': patient_id,
+            '3D Shape': shape_text,
+            'Patient Name': str(patient_name) if patient_name else "Not available",
+            'Institution': institution_name if institution_name else "Not available",
+            'Study Date': study_date if study_date else "No date found",
+            'Modality': modality if modality else "Not available",
+            'Manufacturer': manufacturer if manufacturer else "Not available",
+            'Body Part Examined': body_part_examined if body_part_examined else "Not available",
+            'Age': age if age else "Not available",
+            'Sex': sex if sex else "Not available"
+        }
+        results_df = results_df.append(new_row, ignore_index=True)
+
+    else:
+        new_row = {
+            'Patient ID': patient_id,
+            '3D Shape': "Folder not found",
+            'Patient Name': "Not available",
+            'Institution': "Not available",
+            'Study Date': "No date found",
+            'Modality': "Not available",
+            'Manufacturer': "Not available",
+            'Body Part Examined': "Not available",
+            'Age': "Not available",
+            'Sex': "Not available"
+        }
+        results_df = results_df.append(new_row, ignore_index=True)
+
+# Calculate mean and standard deviation of age
+mean_age = np.mean([a for a in age_list if a is not None])
+std_age = np.std([a for a in age_list if a is not None])
+
+# Write mean age, standard deviation age, and female count to the output text file
+output_txt_path = "output.txt"
+if not os.path.exists(output_txt_path):
+    with open(output_txt_path, 'w') as file:
+        file.write("Output Text File\n\n")
+with open(output_txt_path, "a") as file:
+    file.write("Images loaded succesfully\n")
+    file.write(f"Mean Age: {mean_age}\n")
+    file.write(f"Standard Deviation Age: {std_age}\n")
+    file.write(f"Number of Females: {female_count}\n\n")
+
+output_csv_path = 'output_patient_data_summary.csv'
+results_df.to_csv(output_csv_path, index=False)
