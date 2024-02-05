@@ -1,1 +1,10 @@
+conda install simpleitk
+conda install pandas
+conda install pydicom
 
+import SimpleITK as sitk
+import os
+import pandas as pd
+import pydicom
+import numpy as np
+import re
