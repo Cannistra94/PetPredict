@@ -1,0 +1,47 @@
+def get_image_type(filename):
+    try:
+        image = sitk.ReadImage(filename)
+
+        # Dimension of the image
+        dimension = image.GetSize()
+
+        # Inferring Pixel Type
+        pixel_type = image.GetPixelIDTypeAsString()
+
+        # Voxel spacing
+        spacing = image.GetSpacing()
+
+    except Exception as e:
+        pixel_type, dimension, spacing = "File not found or unreadable", "N/A", "N/A"
+
+    return pixel_type, dimension, spacing
+# Initialize an empty DataFrame for results
+image_info_df = pd.DataFrame(columns=['Patient ID', 'Pixel Type', 'Dimension', 'Voxel Spacing'])
+# Base directory containing the NRRD images
+base_directory = "nrrd_images"
+
+# Path to the CSV file
+csv_file_path = 'patient_data.csv'
+
+# Read the CSV file
+df = pd.read_csv(csv_file_path)
+
+# Iterate over each patient
+for index, row in df.iterrows():
+    patient_id = row['Patient ID']
+    # Construct the file path for the patient's NRRD image
+    image_file = os.path.join(base_directory, patient_id + '.nrrd')
+
+    pixel_type, dimension, spacing = get_image_type(image_file)
+
+    # Append the data to the DataFrame
+    image_info_df = image_info_df.append({
+        'Patient ID': patient_id,
+        'Pixel Type': pixel_type,
+        'Dimension': dimension,
+        'Voxel Spacing': spacing
+    }, ignore_index=True)
+
+# Write the results to a CSV file
+output_csv_path = 'image_info_output.csv'
+image_info_df.to_csv(output_csv_path, index=False)
