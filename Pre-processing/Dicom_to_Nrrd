@@ -1,0 +1,33 @@
+#DICOM TO NRRD
+
+
+def convert_dicom_to_nrrd(dicom_folder, output_file):
+    # Read the DICOM series
+    reader = sitk.ImageSeriesReader()
+    dicom_names = reader.GetGDCMSeriesFileNames(dicom_folder)
+    reader.SetFileNames(dicom_names)
+    image = reader.Execute()
+    
+    # Write the image in NRRD format
+    sitk.WriteImage(image, output_file)
+
+# Base directory containing the DICOM images
+base_directory = "images"
+nrrd_directory = "nrrd_images"
+
+# Ensure the NRRD output directory exists
+os.makedirs(nrrd_directory, exist_ok=True)
+
+# Path to the CSV file
+csv_file_path = 'patient_data.csv'
+
+# Read the CSV file
+df = pd.read_csv(csv_file_path)
+
+# Convert each patient's DICOM to NRRD and store path
+for index, row in df.iterrows():
+    patient_id = row['Patient ID']
+    dicom_folder = os.path.join(base_directory, patient_id)
+    nrrd_file = os.path.join(nrrd_directory, patient_id + '.nrrd')
+
+    convert_dicom_to_nrrd(dicom_folder, nrrd_file)
