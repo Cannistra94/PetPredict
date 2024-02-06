@@ -1,0 +1,22 @@
+def save_figure(image, filename):
+    # Convert the SimpleITK image to a NumPy array
+    array = sitk.GetArrayFromImage(image)
+    
+    # Calculate the middle slice index
+    middle_slice_index = array.shape[0] // 2
+    # Determine the indices of the desired slices
+    slice_indices = [max(middle_slice_index - 20, 0), 
+                     max(middle_slice_index - 10, 0), 
+                     middle_slice_index, 
+                     min(middle_slice_index + 10, array.shape[0] - 1), 
+                     min(middle_slice_index + 20, array.shape[0] - 1)]
+
+    plt.figure(figsize=(25, 5))
+    for i, idx in enumerate(slice_indices, 1):
+        plt.subplot(1, 5, i)
+        plt.imshow(array[idx, :, :], cmap='gray')
+        plt.title(f'Slice {idx}')
+        plt.axis('off')
+
+    plt.savefig(filename)
+    plt.close()
