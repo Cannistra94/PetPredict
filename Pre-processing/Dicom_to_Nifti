@@ -1,0 +1,32 @@
+#DICOM TO NIFTI
+
+def convert_dicom_to_nifti(dicom_folder, output_file):
+    # Read the DICOM series
+    reader = sitk.ImageSeriesReader()
+    dicom_names = reader.GetGDCMSeriesFileNames(dicom_folder)
+    reader.SetFileNames(dicom_names)
+    image = reader.Execute()
+    
+    # Write the image in NIfTI format
+    sitk.WriteImage(image, output_file)
+
+# Base directory containing the DICOM images
+base_directory = "images"
+nifti_directory = "nifti_images"
+
+# Ensure the NIfTI output directory exists
+os.makedirs(nifti_directory, exist_ok=True)
+
+# Path to the CSV file
+csv_file_path = 'patient_data.csv'
+
+# Read the CSV file
+df = pd.read_csv(csv_file_path)
+
+# Convert each patient's DICOM to NIfTI and store path
+for index, row in df.iterrows():
+    patient_id = row['Patient ID']
+    dicom_folder = os.path.join(base_directory, patient_id)
+    nifti_file = os.path.join(nifti_directory, patient_id + '.nii')
+
+    convert_dicom_to_nifti(dicom_folder, nifti_file)
