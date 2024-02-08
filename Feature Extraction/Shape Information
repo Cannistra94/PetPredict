@@ -1,1 +1,31 @@
+from radiomics import featureextractor
+import pandas as pd
+import os
+
+#Shape informations
+# Load the radiomics features CSV file
+radiomics_features_path = 'radiomics_features_output_t1.csv'
+radiomics_df = pd.read_csv(radiomics_features_path)
+
+# Filter out patient IDs starting with 't2'
+radiomics_df_filtered = radiomics_df[~radiomics_df['PatientID'].str.startswith('t2')]
+
+# Extract columns starting with 'original_shape_'
+original_shape_columns = [col for col in radiomics_df_filtered.columns if col.startswith('original_shape_')]
+
+# Include 'PatientID' in the selected columns
+selected_columns = ['PatientID'] + original_shape_columns
+
+# Create a new DataFrame with the selected columns
+selected_features_df = radiomics_df_filtered[selected_columns]
+
+# Remove the 'original_shape_' prefix from feature names
+selected_features_df.columns = selected_features_df.columns.str.replace('original_shape_', '')
+
+# Save the new DataFrame to a new CSV file
+output_csv_path = 'Shape_features_t1.csv'
+selected_features_df.to_csv(output_csv_path, index=False)
+output_txt_path = "output.txt"
+with open(output_txt_path, "a") as file:
+    file.write("T1 Shape features information can be found in Shape_features_t1.csv \n")
 
