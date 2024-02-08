@@ -17,4 +17,4 @@ Usage
 9. Run the preprocessing by typing "python script_preprocessing.py" in project directory. All the outputs will be stored in the project directory.
 10. Run feature extraction python file according to the input images
 11. Run Machine Learning Models contained in folder 'Machine Learning Analysis'.
-12. 
+12. Visualize Plots and Results
