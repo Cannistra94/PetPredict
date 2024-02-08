@@ -1,0 +1,5 @@
+#Open Terminal
+wget https://repo.anaconda.com/archive/Anaconda3-2022.11-Linux-x86_64.sh
+bash Anaconda3-2022.11-Linux-x86_64.sh (In the directory where the file has been downloaded)
+
+Make sure to select Python 3.11 during the installation.
