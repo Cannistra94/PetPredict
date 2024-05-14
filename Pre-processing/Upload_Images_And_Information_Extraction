@@ -16,18 +16,13 @@ std_target = df['Target'].std()
 
 # Write the results to the output text file
 output_txt_path = "output.txt"
-with open(output_txt_path, "a") as file:
+with open(output_txt_path, "a+") as file:
     file.write(f"Number of Subjects: {num_rows}\n")
     file.write(f"Mean of 'Target' Column: {mean_target}\n")
     file.write(f"Standard Deviation of 'Target' Column: {std_target}\n\n")
-# Read the CSV file
-df = pd.read_csv(csv_file_path)
 
-# Initialize an empty DataFrame to store the results
-results_df = pd.DataFrame(columns=[
-    'Patient ID', '3D Shape', 'Patient Name', 'Institution', 'Study Date',
-    'Modality', 'Manufacturer', 'Body Part Examined', 'Age', 'Sex'
-])
+# Initialize an empty list to store the data
+data_rows = []
 
 age_list = []
 female_count = 0  # Counter for the number of 'F' in Sex
@@ -80,7 +75,8 @@ for index, row in df.iterrows():
 
         shape_text = str(np.stack(slices).shape) if slices else "No DICOM files found"
 
-        new_row = {
+        # Append the data to the list
+        data_rows.append({
             'Patient ID': patient_id,
             '3D Shape': shape_text,
             'Patient Name': str(patient_name) if patient_name else "Not available",
@@ -91,11 +87,11 @@ for index, row in df.iterrows():
             'Body Part Examined': body_part_examined if body_part_examined else "Not available",
             'Age': age if age else "Not available",
             'Sex': sex if sex else "Not available"
-        }
-        results_df = results_df.append(new_row, ignore_index=True)
+        })
 
     else:
-        new_row = {
+        # Append the data to the list
+        data_rows.append({
             'Patient ID': patient_id,
             '3D Shape': "Folder not found",
             'Patient Name': "Not available",
@@ -106,8 +102,10 @@ for index, row in df.iterrows():
             'Body Part Examined': "Not available",
             'Age': "Not available",
             'Sex': "Not available"
-        }
-        results_df = results_df.append(new_row, ignore_index=True)
+        })
+
+# Convert the list of dictionaries to a DataFrame
+results_df = pd.DataFrame(data_rows)
 
 # Calculate mean and standard deviation of age
 mean_age = np.mean([a for a in age_list if a is not None])
@@ -119,10 +117,11 @@ if not os.path.exists(output_txt_path):
     with open(output_txt_path, 'w') as file:
         file.write("Output Text File\n\n")
 with open(output_txt_path, "a") as file:
-    file.write("Images loaded succesfully\n")
+    file.write("Images loaded successfully\n")
     file.write(f"Mean Age: {mean_age}\n")
     file.write(f"Standard Deviation Age: {std_age}\n")
     file.write(f"Number of Females: {female_count}\n\n")
 
+# Write the DataFrame to a CSV file
 output_csv_path = 'output_patient_data_summary.csv'
 results_df.to_csv(output_csv_path, index=False)
