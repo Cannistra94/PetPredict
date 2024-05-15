@@ -4,7 +4,7 @@ def n4_bias_correction(input_image_filename, output_image_filename, mask_image_f
 
     # Save the original image figure
     if figures_directory:
-        original_figure_filename = os.path.join(figures_directory, os.path.basename(input_image_filename).replace('.nii.gz', '_original.png'))
+        original_figure_filename = os.path.join(figures_directory, os.path.basename(input_image_filename).replace('.nii', '_original.png'))
         save_figure(input_image, original_figure_filename)
 
     if mask_image_filename:
@@ -23,7 +23,7 @@ def n4_bias_correction(input_image_filename, output_image_filename, mask_image_f
 
     # Save the corrected image figure
     if figures_directory:
-        corrected_figure_filename = os.path.join(figures_directory, os.path.basename(output_image_filename).replace('.nii.gz', '_corrected.png'))
+        corrected_figure_filename = os.path.join(figures_directory, os.path.basename(output_image_filename).replace('.nii', '_corrected.png'))
         save_figure(corrected_image, corrected_figure_filename)
 
     sitk.WriteImage(corrected_image, output_image_filename)
@@ -38,12 +38,13 @@ os.makedirs(figures_dir, exist_ok=True)
 # Example usage
 images = pd.read_csv('patient_data.csv', header=0)
 for i in images.iloc[:, 0]:
-    input_filename = f"nifti_images\\{i}.nii.gz"
-    output_filename = f"{output_dir}/{i}.nii.gz"
+    input_filename = f"nifti_images/{i}.nii"
+    output_filename = f"{output_dir}/{i}.nii"
     n4_bias_correction(input_filename, output_filename, figures_directory=figures_dir)
 
+# Write to the output text file
 output_txt_path = "output.txt"
 with open(output_txt_path, "a") as file:
-    file.write("Images corrected for field inhomogeneity using N4BiasFieldCorrection algorithm (sitk library) succesfully\n")
+    file.write("Images corrected for field inhomogeneity using N4BiasFieldCorrection algorithm (sitk library) successfully\n")
     file.write("Figures can be found in n4_figures directory\n")
     file.write("Corrected images can be found in n4_corrected directory\n")
