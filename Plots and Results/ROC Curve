@@ -1,1 +1,26 @@
+# Plot ROC curve
+plt.figure(figsize=(8, 6))
+plt.plot(mean_fpr, mean_tpr, color='b', lw=2, label=f'Mean ROC AUC = {best_roc_auc:.2f}')
 
+# Plot diagonal line (random classifier)
+plt.plot([0, 1], [0, 1], color='gray', linestyle='--')
+
+# Set labels and title
+plt.xlabel('False Positive Rate')
+plt.ylabel('True Positive Rate')
+plt.title('Receiver Operating Characteristic (ROC) Curve')
+plt.legend(loc='lower right')
+
+
+# Save plot to new directory
+
+# Directory
+directory = "roc_auc_plots"
+
+# Create the directory
+os.makedirs(directory, exist_ok=True)
+
+plt.savefig('roc_auc_plots/roc_curve_logistic_regression.png')
+
+# Show plot
+plt.close()
