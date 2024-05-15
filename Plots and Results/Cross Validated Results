@@ -1,1 +1,67 @@
+# Perform k-fold cross-validation
+    for train_index, test_index in kf.split(X_selected, target_t1):
+        X_train, X_test = X_selected[train_index], X_selected[test_index]
+        y_train, y_test = target_t1.iloc[train_index], target_t1.iloc[test_index]
 
+        # Data normalization using StandardScaler
+        scaler = StandardScaler()
+        X_train_normalized = scaler.fit_transform(X_train)
+        X_test_normalized = scaler.transform(X_test)
+
+        # Train the model - (Hyperparameters optimization already done)
+        best_model.fit(X_train_normalized, y_train)
+
+        # Predict on the test set
+        y_pred = best_model.predict(X_test_normalized)
+        # Predict probabilities on the test set
+        y_proba = best_model.predict_proba(X_test_normalized)[:, 1]
+        # Calculate evaluation metrics
+        accuracy = accuracy_score(y_test, y_pred)
+        sensitivities.append(recall_score(y_test, y_pred))
+        specificities.append(recall_score(y_test, y_pred, pos_label=0))
+        precisions.append(precision_score(y_test, y_pred))
+        f1_scores.append(f1_score(y_test, y_pred))
+        roc_aucs.append(roc_auc_score(y_test, y_pred))
+
+        accuracies.append(accuracy)
+# Calculate average metrics and their standard deviations
+    average_accuracy = np.mean(accuracies)
+    average_sensitivity = np.mean(sensitivities)
+    average_specificity = np.mean(specificities)
+    average_precision = np.mean(precisions)
+    average_f1 = np.mean(f1_scores)
+    average_roc_auc = np.mean(roc_aucs)
+    # Calculate mean and standard deviation of AUC
+    mean_fpr = np.linspace(0, 1, 100)
+    
+    interpolated_tpr = [interp(mean_fpr, fpr, tpr) for fpr, tpr in zip(all_fpr, all_tpr)]   
+    # Calculate the mean of the interpolated TPRs
+    mean_tpr = np.mean(interpolated_tpr, axis=0)
+    std_accuracy = np.std(accuracies)
+    std_sensitivity = np.std(sensitivities)
+    std_specificity = np.std(specificities)
+    std_precision = np.std(precisions)
+    std_f1 = np.std(f1_scores)
+    std_roc_auc = np.std(roc_aucs)
+# Check if current model performed better
+    if average_accuracy > best_accuracy:
+        best_accuracy = average_accuracy
+        best_k = k_best_features
+        best_specificity = average_specificity
+        best_sensitivity = average_sensitivity
+        best_precision = average_precision
+        best_f1 = average_f1
+        best_roc_auc = average_roc_auc
+        best_feature_data = concatenated_data
+        best_fpr = np.mean(all_fpr, axis=0)
+        best_tpr = np.mean(all_tpr, axis=0)
+
+with open(output_txt_path, "a") as file:
+    file.write(f"Best number of features - Logistic Regression Model: {best_k}\n")
+    file.write(f"Best average accuracy - Logistic Regression Model: {best_accuracy:.2f} ± {std_accuracy:.2f}\n")
+    file.write(f"Best average sensitivity - Logistic Regression Model: {best_sensitivity:.2f} ± {std_sensitivity:.2f}\n")
+    file.write(f"Best average specificity - Logistic Regression Model: {best_specificity:.2f} ± {std_specificity:.2f}\n")
+    file.write(f"Best average precision - Logistic Regression Model: {best_precision:.2f} ± {std_precision:.2f}\n")
+    file.write(f"Best average F1-score - Logistic Regression Model: {best_f1:.2f} ± {std_f1:.2f}\n")
+    file.write(f"Best average ROC AUC - Logistic Regression Model: {best_roc_auc:.2f} ± {std_roc_auc:.2f}\n")
+    file.write(f"Best hyperparameters of the best accuracy - Logistic Regression Model: {best_hyperparameters[best_k]}\n")
