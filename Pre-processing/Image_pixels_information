@@ -15,8 +15,10 @@ def get_image_type(filename):
         pixel_type, dimension, spacing = "File not found or unreadable", "N/A", "N/A"
 
     return pixel_type, dimension, spacing
-# Initialize an empty DataFrame for results
-image_info_df = pd.DataFrame(columns=['Patient ID', 'Pixel Type', 'Dimension', 'Voxel Spacing'])
+
+# Initialize an empty list to store image information
+image_info_list = []
+
 # Base directory containing the NRRD images
 base_directory = "nrrd_images"
 
@@ -34,13 +36,16 @@ for index, row in df.iterrows():
 
     pixel_type, dimension, spacing = get_image_type(image_file)
 
-    # Append the data to the DataFrame
-    image_info_df = image_info_df.append({
+    # Append the data to the list
+    image_info_list.append({
         'Patient ID': patient_id,
         'Pixel Type': pixel_type,
         'Dimension': dimension,
         'Voxel Spacing': spacing
-    }, ignore_index=True)
+    })
+
+# Convert the list of dictionaries to a DataFrame
+image_info_df = pd.DataFrame(image_info_list)
 
 # Write the results to a CSV file
 output_csv_path = 'image_info_output.csv'
