@@ -1,7 +1,3 @@
-from radiomics import featureextractor
-import pandas as pd
-import os
-
 #Shape informations
 # Load the radiomics features CSV file
 radiomics_features_path = 'radiomics_features_output_t1.csv'
@@ -28,4 +24,3 @@ selected_features_df.to_csv(output_csv_path, index=False)
 output_txt_path = "output.txt"
 with open(output_txt_path, "a") as file:
     file.write("T1 Shape features information can be found in Shape_features_t1.csv \n")
-
