@@ -1,9 +1,0 @@
-#Open Terminal
-wget https://repo.anaconda.com/archive/Anaconda3-2022.11-Windows-x86_64.exe
-cd C:\Users\YourUsername\Downloads
-Anaconda3-2022.11-Windows-x86_64.exe
-#Follow Instruction for download
-
-Open Anaconda Prompt and Install Required Libraries (see Download Libraries)
-
-
