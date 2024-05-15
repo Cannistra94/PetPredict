@@ -1,7 +1,3 @@
-from radiomics import featureextractor
-import pandas as pd
-import os
-
 # T2 features extraction
 normalized_images_dir = "n4_corrected"
 segmentation_dir = "segmentation"
@@ -34,7 +30,7 @@ radiomics_features_list = []
 # Extract radiomics features for each patient
 for patient_id in patient_data.iloc[:, 0]:
     if patient_id.startswith('t2'):  # Check if the patient ID starts with 't2'
-        image_filename = os.path.join(normalized_images_dir, f"{patient_id}.nii.gz")
+        image_filename = os.path.join(normalized_images_dir, f"{patient_id}.nii")
         segmentation_filename = os.path.join(segmentation_dir, f"{patient_id}_segmentation.nrrd")
 
         if os.path.exists(image_filename) and os.path.exists(segmentation_filename):
@@ -59,4 +55,4 @@ radiomics_features_df = pd.concat(radiomics_features_list, ignore_index=True)
 radiomics_features_df.to_csv('radiomics_features_output_t2.csv', index=False)
 output_txt_path = "output.txt"
 with open(output_txt_path, "a") as file:
-    file.write("T2 Features successfully extracted and stored in radiomics_features_output_t1.csv\n")
+    file.write("T2 Features successfully extracted and stored in radiomics_features_output_t2.csv\n")
