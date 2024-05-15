@@ -2,7 +2,11 @@
     for train_index, test_index in kf.split(X_selected, target_t1):
         X_train, X_test = X_selected[train_index], X_selected[test_index]
         y_train, y_test = target_t1.iloc[train_index], target_t1.iloc[test_index]
-
+        if smote_flag == 1:
+            #smote = SMOTE(random_state=42)
+            X_train_resampled, y_train_resampled = smote.fit_resample(X_train, y_train)
+        else:
+            X_train_resampled, y_train_resampled = X_train, y_train
         # Data normalization using StandardScaler
         scaler = StandardScaler()
         X_train_normalized = scaler.fit_transform(X_train)
