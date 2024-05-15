@@ -228,10 +228,6 @@ for index, row in df.iterrows():
 # In[12]:
 
 
-import os
-import pandas as pd
-import SimpleITK as sitk
-
 def get_image_type(filename):
     try:
         image = sitk.ReadImage(filename)
@@ -288,11 +284,6 @@ image_info_df.to_csv(output_csv_path, index=False)
 
 # In[16]:
 
-
-import os
-import pandas as pd
-import SimpleITK as sitk
-import matplotlib.pyplot as plt
 
 def save_figure(image, filename):
     # Convert the SimpleITK image to a NumPy array
