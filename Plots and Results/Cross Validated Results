@@ -12,7 +12,10 @@
         X_train_normalized = scaler.fit_transform(X_train)
         X_test_normalized = scaler.transform(X_test)
 
-        # Train the model - (Hyperparameters optimization already done)
+        grid_search.fit(X_train_normalized, y_train_resampled)
+        # Retrieve best hyperparameters
+        best_model = grid_search.best_estimator_
+        best_hyperparameters[k_best_features] = grid_search.best_params_
         best_model.fit(X_train_normalized, y_train)
 
         # Predict on the test set
