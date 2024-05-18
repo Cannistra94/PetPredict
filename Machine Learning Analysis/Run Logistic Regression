@@ -69,7 +69,7 @@ target_t1 = target_t1.apply(lambda x: 1 if x > threshold else 0)
 
 
 # Define the number of folds for cross-validation
-num_folds = 5
+num_folds = 5 # 5 Fold Cross-Validation
 #kf = KFold(n_splits=num_folds, shuffle=True) # Use Stratified K Fold in presence of clas unbalance
 
 kf = StratifiedKFold(n_splits=num_folds, shuffle=True)
@@ -105,12 +105,7 @@ for k_best_features in k_range:
                   'penalty': ['l1', 'l2'],
                   'solver': ['liblinear']}
     grid_search = GridSearchCV(LogisticRegression(), param_grid, cv=num_folds, scoring='roc_auc')
-    X_selected_scaled=scaler.fit_transform(X_selected)
-    grid_search.fit(X_selected_scaled, target_t1)
-
-    # Retrieve best hyperparameters
-    best_model = grid_search.best_estimator_
-    best_hyperparameters[k_best_features] = grid_search.best_params_
+    
     # Check if SMOTE should be applied
     if smote_flag == 1:
         # Create SMOTE object
@@ -143,7 +138,10 @@ for k_best_features in k_range:
         scaler = StandardScaler()
         X_train_normalized = scaler.fit_transform(X_train_resampled)
         X_test_normalized = scaler.transform(X_test)
-
+        grid_search.fit(X_train_normalized, y_train_resampled)
+        # Retrieve best hyperparameters
+        best_model = grid_search.best_estimator_
+        best_hyperparameters[k_best_features] = grid_search.best_params_
         # Train the model
         best_model.fit(X_train_normalized, y_train_resampled)
 
