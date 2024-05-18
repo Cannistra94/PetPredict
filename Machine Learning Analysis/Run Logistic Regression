@@ -1,5 +1,5 @@
 # Define the number of folds for cross-validation
-num_folds = 3
+num_folds = 5 # 5 fold cross-validation
 #kf = KFold(n_splits=num_folds, shuffle=True)# Use Stratified K Fold in presence of clas unbalance
 
 kf = StratifiedKFold(n_splits=num_folds, shuffle=True)
