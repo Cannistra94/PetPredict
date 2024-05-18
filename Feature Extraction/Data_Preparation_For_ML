@@ -1,3 +1,4 @@
+#T1
 # Load the radiomics features CSV file
 radiomics_features_path = 'radiomics_features_output_t1.csv'
 radiomics_df = pd.read_csv(radiomics_features_path)
@@ -14,6 +15,7 @@ merged_df = pd.merge(radiomics_df, patient_data_df[['PatientID', 'Target']], on=
 merged_output_csv_path = 'radiomics_features_t1_with_target.csv'
 merged_df.to_csv(merged_output_csv_path, index=False)
 
+#T2 (if available)
 # Load the radiomics features CSV file
 radiomics_features_path = 'radiomics_features_output_t2.csv'
 radiomics_df = pd.read_csv(radiomics_features_path)
