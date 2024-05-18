@@ -194,7 +194,7 @@ for k_best_features in k_range:
     std_roc_auc = np.std(roc_aucs)
 
     # Check if current model performed better
-    if average_accuracy > best_accuracy:
+    if average_roc_auc > best_roc_auc:
         best_accuracy = average_accuracy
         best_k = k_best_features
         best_specificity = average_specificity
