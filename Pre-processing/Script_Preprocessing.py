@@ -3,7 +3,6 @@
 
 # In[4]:
 
-
 import SimpleITK as sitk
 import os
 import pandas as pd
