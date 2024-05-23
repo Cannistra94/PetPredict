@@ -8,7 +8,7 @@ A tool for predicting PET parameters using MRI sequences as input. Steps require
 5. Define and extract PET-parameters for each patient (such as Tumor to brain Ratio), according to the experimental settings and insert information in the second column of the csv file in a column called 'Target' 
 6. The csv file will look as follows:
        -column 1='Patient ID'. Add below list of all the IDs contained in the folder 'images' after renaming. Note that files in the segmentation folder must be named using patientid + '_segmentation.nrrd'
-       -column 2='Target'. Insert target PET parameter for each IDs
+       -column 2='Target'. Insert target PET parameter for each IDs (You can find an example on how to setup directories in the folder 'Example_data_preparation')
 7. This target PET parameters will be binarized according to given threshold 
 8. Download run_analysis.py from this repository and place it in project directory
 9. Install all the required libraries for the analysis as listed in folder 'Libraries'
