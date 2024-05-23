@@ -2,7 +2,7 @@
 A tool for predicting PET parameters using MRI sequences as input. Steps required pre-analysis
 
 1. Create a new project directory 
-2. Create a folder in the project directory called 'images' and upload all the raw images for the analysis, in case of multimodal MRI (i.e. T2 MRI), upload them in the same folder using a different name (i.e. T1_patient_0, T2_patient_0).
+2. Create a folder in the project directory called 'images' and upload all the raw images for the analysis, in case of multimodal MRI (i.e. T2 MRI), upload them in the same folder using a different name (i.e. T1_patient_1, T2_patient_1).
 3. Create a folder called segmentation, with all the segmentation for each patient named using '_segmentation' after patient name as defined in step 2
 4. Define and extract PET-parameters for each patient (such as Tumor to brain Ratio), according to the experimental settings 
 5. Create a csv file with two columns and call it 'patient_data.csv':
