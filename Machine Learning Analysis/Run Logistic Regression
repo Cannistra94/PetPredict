@@ -11,29 +11,28 @@ import matplotlib.pyplot as plt
 import os
 
 threshold = 0.0
-# Define SMOTE flag (0 for no SMOTE, 1 for applying SMOTE)
 smote_flag = 0
+num_folds=0
 def main():
-    global threshold, smote_flag
+    global threshold, smote_flag, num_folds
 
     # Check if the correct number of arguments are provided
-    if len(sys.argv) != 3:
-        print("Usage: python Running_Logistic_Regression.py threshold smote_flag")
+    if len(sys.argv) != 4:
+        print("Usage: python run_logistic_regression.py <threshold> <smote_flag(0 for NO SMOTE, 1 for SMOTE)>  <Number of Folds for Cross-Validation>")
         sys.exit(1)
 
     # Extract threshold and SMOTE flag from command-line arguments
     threshold = float(sys.argv[1])
     smote_flag = int(sys.argv[2])
-
+    num_folds= int(sys.argv[3])
     # Now you can use threshold and smote in your script
     print("Threshold for PET index:", threshold)
     print("SMOTE flag:", smote_flag)
-    
-
-    
+    print("Number of Folds for Cross-Validation:", num_folds)
 
 if __name__ == "__main__":
     main()
+
 
 
 # In[14]:
@@ -61,22 +60,11 @@ with open(output_txt_path, "a") as file:
 # In[15]:
 
 
-# Modify values based on threshold
-target_t1 = target_t1.apply(lambda x: 1 if x > threshold else 0)
-
-
-# In[21]:
-
-
-# Define the number of folds for cross-validation
-num_folds = 5 # 5 Fold Cross-Validation
-#kf = KFold(n_splits=num_folds, shuffle=True) # Use Stratified K Fold in presence of clas unbalance
-
 kf = StratifiedKFold(n_splits=num_folds, shuffle=True)
 
 # Define range of k for SelectKBest
-k_range = range(5, 10)  #  adjust this range to explore more features
-from imblearn.over_sampling import SMOTE
+k_range = range(5, 50)  #  adjust this range to explore more features
+
 # Initialize variables to store best parameters
 best_k = None
 best_accuracy = 0.0
@@ -89,6 +77,14 @@ best_roc_auc = 0.0
 best_feature_data = None
 best_hyperparameters = {}
 concatenated_data = pd.DataFrame()
+
+# Define parameter grids for each model. Add or remove to personalize parameters
+logistic_regression_param_grid = {
+    'C': [0.1, 0.5, 1, 3, 5, 10, 20],
+    'penalty': ['l1', 'l2'],
+    'solver': [ 'lbfgs', 'liblinear']
+}
+
 for k_best_features in k_range:
     # Feature selection using SelectKBest
     selector = SelectKBest(score_func=f_classif, k=k_best_features)
@@ -99,13 +95,11 @@ for k_best_features in k_range:
 
     # Create a DataFrame with selected feature columns and their values
     selected_data = pd.DataFrame(X_selected, columns=selected_columns)
+    # Initialize model and parameter grid based on model_flag
     
-    # Hyperparameter optimization using GridSearchCV
-    param_grid = {'C': [0.001, 0.01, 0.1, 1, 10, 100],
-                  'penalty': ['l1', 'l2'],
-                  'solver': ['liblinear']}
-    grid_search = GridSearchCV(LogisticRegression(), param_grid, cv=num_folds, scoring='roc_auc')
-    
+    model = LogisticRegression()
+    param_grid = logistic_regression_param_grid
+   
     # Check if SMOTE should be applied
     if smote_flag == 1:
         # Create SMOTE object
@@ -126,7 +120,6 @@ for k_best_features in k_range:
         X_train, X_test = X_selected[train_index], X_selected[test_index]
         y_train, y_test = target_t1.iloc[train_index], target_t1.iloc[test_index]
         
-        
         if smote_flag == 1:
             #smote = SMOTE(random_state=42)
             X_train_resampled, y_train_resampled = smote.fit_resample(X_train, y_train)
@@ -134,7 +127,7 @@ for k_best_features in k_range:
             
         else:
             X_train_resampled, y_train_resampled = X_train, y_train
-       
+        
         scaler = StandardScaler()
         X_train_normalized = scaler.fit_transform(X_train_resampled)
         X_test_normalized = scaler.transform(X_test)
@@ -192,7 +185,7 @@ for k_best_features in k_range:
     std_roc_auc = np.std(roc_aucs)
 
     # Check if current model performed better
-    if average_roc_auc > best_roc_auc:
+    if average_accuracy > best_accuracy:
         best_accuracy = average_accuracy
         best_k = k_best_features
         best_specificity = average_specificity
@@ -226,24 +219,24 @@ directory = "roc_auc_plots"
 # Create the directory
 os.makedirs(directory, exist_ok=True)
 
-plt.savefig('roc_auc_plots/roc_curve_logistic_regression.png')
+plt.savefig(f'roc_auc_plots/roc_curve_lr_model.png')
 
 # Show plot
 plt.close()
 #writing output metrics in output file
 with open(output_txt_path, "a") as file:
-    file.write(f"Best number of features - Logistic Regression Model: {best_k}\n")
-    file.write(f"Best average accuracy - Logistic Regression Model: {best_accuracy:.2f} ± {std_accuracy:.2f}\n")
-    file.write(f"Best average sensitivity - Logistic Regression Model: {best_sensitivity:.2f} ± {std_sensitivity:.2f}\n")
-    file.write(f"Best average specificity - Logistic Regression Model: {best_specificity:.2f} ± {std_specificity:.2f}\n")
-    file.write(f"Best average precision - Logistic Regression Model: {best_precision:.2f} ± {std_precision:.2f}\n")
-    file.write(f"Best average F1-score - Logistic Regression Model: {best_f1:.2f} ± {std_f1:.2f}\n")
-    file.write(f"Best average ROC AUC - Logistic Regression Model: {best_roc_auc:.2f} ± {std_roc_auc:.2f}\n")
-    file.write(f"Best hyperparameters of the best accuracy - Logistic Regression Model: {best_hyperparameters[best_k]}\n")
+    file.write(f"Best number of features - Model LR: {best_k}\n")
+    file.write(f"Best average accuracy - Model LR: {best_accuracy:.2f} ± {std_accuracy:.2f}\n")
+    file.write(f"Best average sensitivity - Model LR: {best_sensitivity:.2f} ± {std_sensitivity:.2f}\n")
+    file.write(f"Best average specificity - Model LR: {best_specificity:.2f} ± {std_specificity:.2f}\n")
+    file.write(f"Best average precision - Model LR: {best_precision:.2f} ± {std_precision:.2f}\n")
+    file.write(f"Best average F1-score - Model LR: {best_f1:.2f} ± {std_f1:.2f}\n")
+    file.write(f"Best average ROC AUC - Model LR: {best_roc_auc:.2f} ± {std_roc_auc:.2f}\n")
+    file.write(f"Best hyperparameters of the best accuracy - Model LR: {best_hyperparameters[best_k]}\n")
 
 with open(output_txt_path, "a") as file:
-    file.write(f"ROC_AUC plots  - Logistic Regression Model are saved in roc_auc_plots folder\n")
-    file.write(f"Best features  - Logistic Regression Model selected are stored in best_feature_data.csv\n")
+    file.write(f"ROC_AUC plots  - Model LR are saved in roc_auc_plots folder\n")
+    file.write(f"Best features  - Model LR selected are stored in best_feature_data_model_LR.csv\n")
     
 # Save the best feature columns to a CSV file
-best_feature_data.to_csv('best_feature_data_LogisticRegression.csv', index=False)
+best_feature_data.to_csv(f'best_feature_data_model_LR.csv', index=False)
