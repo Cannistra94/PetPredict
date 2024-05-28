@@ -22,7 +22,15 @@ python run_analysis.py <flag_t2> <threshold_PET_index> <run_SMOTE> <model_flag> 
 <run_SMOTE>: decide whether or not apply oversampling of minority class during training phases. Must be 0 (Do not apply) or 1 (Apply)
 <model_flag>: select the ML model to run (0 for LogisticRegression, 1 for SupportVectorMachine, 2 for RandomForest, 3 for Adaboost)
 <num_folds>: select number of folds for cross validation
-10. Visualize Plots and Results generated in the project directory. Intermediate outputs will be written in 'output.txt'
+
+10. Visualize Plots and Results generated in the project directory.
+
+Outuputs will include:
+-Description of initial dataset (i.e. demographics and other relevant information such as scanner protocol)
+-Intermediate outputs will be written in 'output.txt' to provide confirmation of succesfull operations
+-Cross-Validated results (according to number of K inserted as input) such as Accuracy, Specificity, Sensitivity, Precision, F1, ROC AUC
+-ROC curve plots for the best model
+-Selected radiomics features (according to best performing model) will be written to allow further analysis
 
 
 If you've already done the preprocessing and you wish to try different models or settings you can download the script run_analysis_skip_preprocessing.py which takes same parameters as run_analysis but it skips all the processing steps.
