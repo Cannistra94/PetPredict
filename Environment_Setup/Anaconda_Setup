@@ -3,3 +3,12 @@
 3. Choose the Python version you want to use (most users should choose the latest version).
 4. Locate the downloaded .exe file and double-click it to run the installer
 5. Follow the Installation Instructions
+
+On Windows: Open the Anaconda Prompt from the Start Menu.
+On macOS and Linux: Open the Terminal
+
+Type:
+1. conda create --name radiomics_env python=3.8
+2. cd <path_to_project_directory>
+
+Follow Instructions in 'Libraries' to install the required packages
