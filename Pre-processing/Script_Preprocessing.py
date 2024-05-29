@@ -1,15 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[4]:
-
-import SimpleITK as sitk
-import os
-import pandas as pd
-import pydicom
-import numpy as np
-import re
-import matplotlib.pyplot as plt
 
 
 # In[8]:
