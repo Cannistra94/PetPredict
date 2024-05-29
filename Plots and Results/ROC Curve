@@ -20,7 +20,4 @@ directory = "roc_auc_plots"
 # Create the directory
 os.makedirs(directory, exist_ok=True)
 
-plt.savefig('roc_auc_plots/roc_curve_logistic_regression.png')
-
-# Show plot
-plt.close()
+plt.savefig(f'roc_auc_plots/roc_curve_model_T1_sequence.png')
