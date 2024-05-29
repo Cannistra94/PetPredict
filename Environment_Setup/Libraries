@@ -1,3 +1,11 @@
 In the terminal (within radiomics_env environment) type:
 
-1.
+1. pip install SimpleITK
+2. pip install pandas
+3. pip install pydicom
+4. pip install numpy
+5. pip install matplotlib
+6. pip install pyradiomics
+7. pip install scikit-learn
+8. pip install imbalanced-learn
+9. pip install scipy
