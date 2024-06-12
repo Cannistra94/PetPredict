@@ -15,7 +15,7 @@ A tool for predicting PET parameters using MRI sequences as input. Steps require
    
 Usage run_analysis.py
 
-python run_analysis.py <flag_t2> <threshold_PET_index> <run_SMOTE> <model_flag> <num_folds>
+python run_analysis.py <flag_t2> <threshold_PET_index> <run_SMOTE> <model_flag> <num_folds> <analysis_settings>
 
 <flag_t2>: Flag used to indicate whether T2 is available or not (1 if available, 0 otherwise). If T2 is available the tool will run analysis for single modality alone as well as their combination
 
@@ -26,6 +26,8 @@ python run_analysis.py <flag_t2> <threshold_PET_index> <run_SMOTE> <model_flag> 
 <model_flag>: select the ML model to run (0 for LogisticRegression, 1 for SupportVectorMachine, 2 for RandomForest, 3 for Adaboost)
 
 <num_folds>: select number of folds for cross validation
+
+<analysis_settings>: whether to train and test the model on user-defined MR + PET indices (code 0), apply Transfer Learning technique (code 1), which also requires MR + PET user data, but trained model is used and additional training is performed for fine-tuning before testing phases or directly testing on unseen MR data (code 2). Note that, if code 2 is selected, no metrics can be provided as output and PET-indices are predicted with a certain accuracy as described in the manuscript.
 
 10. Visualize Plots and Results generated in the project directory.
 
