@@ -18,9 +18,13 @@ Usage run_analysis.py
 python run_analysis.py <flag_t2> <threshold_PET_index> <run_SMOTE> <model_flag> <num_folds>
 
 <flag_t2>: Flag used to indicate whether T2 is available or not (1 if available, 0 otherwise). If T2 is available the tool will run analysis for single modality alone as well as their combination
+
 <threshold_PET_index>: Threshold used to binarize PET-parameters. Must be a float (i.e. 1.6, 2.0)
+
 <run_SMOTE>: decide whether or not apply oversampling of minority class during training phases. Must be 0 (Do not apply) or 1 (Apply)
+
 <model_flag>: select the ML model to run (0 for LogisticRegression, 1 for SupportVectorMachine, 2 for RandomForest, 3 for Adaboost)
+
 <num_folds>: select number of folds for cross validation
 
 10. Visualize Plots and Results generated in the project directory.
