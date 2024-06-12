@@ -27,7 +27,7 @@ python run_analysis.py <flag_t2> <threshold_PET_index> <run_SMOTE> <model_flag> 
 
 <num_folds>: select number of folds for cross validation
 
-<analysis_settings>: whether to train and test the model on user-defined MR + PET indices (code 0), apply Transfer Learning technique (code 1), which also requires MR + PET user data, but trained model is used and additional training is performed for fine-tuning before testing phases or directly testing on unseen MR data (code 2). Note that, if code 2 is selected, no metrics can be provided as output and PET-indices are predicted with a certain accuracy as described in the manuscript.
+<analysis_settings>: whether to train and test the model on user-defined MR + PET indices (code 0) or apply Transfer Learning technique (code 1), which also requires MR + PET user data, but trained model is used and additional training is performed for fine-tuning before testing phases. 
 
 10. Visualize Plots and Results generated in the project directory.
 
