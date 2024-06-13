@@ -15,7 +15,7 @@ A tool for predicting PET parameters using MRI sequences as input. Steps require
    
 Usage run_analysis.py
 
-python run_analysis.py <flag_t2> <threshold_PET_index> <run_SMOTE> <model_flag> <num_folds> <analysis_settings>
+python run_analysis.py <flag_t2> <threshold_PET_index> <run_SMOTE> <model_flag> <num_folds> <Transfer_Learning>
 
 <flag_t2>: Flag used to indicate whether T2 is available or not (1 if available, 0 otherwise). If T2 is available the tool will run analysis for single modality alone as well as their combination
 
