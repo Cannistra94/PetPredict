@@ -12,6 +12,7 @@ A tool for predicting PET parameters using MRI sequences as input. Steps require
 7. This target PET parameters will be binarized according to given threshold 
 8. Install all the required libraries for the analysis as listed in folder 'Environment_Setup'
 9. Download run_analysis.py from this repository and place it in project directory
+10. If you wish to apply Transfer Learning technique, download and move to project directory all the file contained in 'Transfer Learning' folder.
    
 Usage run_analysis.py
 
@@ -29,7 +30,7 @@ python run_analysis.py <flag_t2> <threshold_PET_index> <run_SMOTE> <model_flag> 
 
 <analysis_settings>: whether to train and test the model on user-defined MR + PET indices (code 0) or apply Transfer Learning technique (code 1), which also requires MR + PET user data, but trained model is used and additional training is performed for fine-tuning before testing phases. 
 
-10. Visualize Plots and Results generated in the project directory.
+11. Visualize Plots and Results generated in the project directory.
 
 Outuputs will include:
 -Description of initial dataset (i.e. demographics and other relevant information such as scanner protocol)
