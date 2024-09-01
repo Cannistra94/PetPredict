@@ -28,7 +28,7 @@ python run_analysis.py <flag_t2> <threshold_PET_index> <run_SMOTE> <model_flag> 
 
 <num_folds>: select number of folds for cross validation
 
-<analysis_settings>: whether to train and test the model on user-defined MR + PET indices (code 0) or apply Transfer Learning technique (code 1), which also requires MR + PET user data, but trained model is used and additional training is performed for fine-tuning before testing phases. 
+<Transfer_Learning>: whether to train and test the model on user-defined MR + PET indices (code 0) or apply Transfer Learning technique (code 1), which also requires MR + PET user data, but previously trained model is used and additional training is performed for fine-tuning before testing phases. 
 
 11. Visualize Plots and Results generated in the project directory.
 
@@ -41,4 +41,3 @@ Outuputs will include:
 
 
 If you've already done the preprocessing and you wish to try different models or settings you can download the script run_analysis_skip_preprocessing.py which takes same parameters as run_analysis but it skips all the processing steps.
-The repository also contains all the scripts to run each single step in the relative directories.
