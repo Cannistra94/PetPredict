@@ -28,7 +28,7 @@ python run_analysis.py <flag_t2> <threshold_PET_index> <run_SMOTE> <model_flag> 
 
 <num_folds>: select number of folds for cross validation
 
-<Transfer_Learning>: whether to train and test the model on user-defined MR + PET indices (code 0) or apply Transfer Learning technique (code 1), which also requires MR + PET user data, but previously trained model is used and additional training is performed for fine-tuning before testing phases. 
+<Transfer_Learning>: whether to train and test the model on user-defined MR + PET indices (code 0) or apply Transfer Learning technique (code 1), which also requires MR + PET user data, but previously trained model is used and additional training is performed for fine-tuning before testing phases. Note: Transfer Learning technique is available only if selecting Logistic Regression (LR) model as the best results were achieved with the LR model
 
 11. Visualize Plots and Results generated in the project directory.
 
