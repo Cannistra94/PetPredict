@@ -1,5 +1,7 @@
-# RM-PET TOOL
-A tool for predicting PET parameters using MRI sequences as input. Steps required pre-analysis
+# A Machine Learning Tool for MR to PET cross-modality prediction
+A tool for predicting PET parameters using MRI sequences as input. 
+
+Steps required:
 
 1. Create a new project directory 
 2. Create a folder in the project directory called 'images' and upload all folder containing the raw DICOM images for the analysis. Rename DICOM data folders using unique ID (i.e. t1_patient_1, t1_patient_2 ..). In case of multimodal MRI (i.e. T2 MRI) available, upload the DICOM folders in the same directory using same criteria (i.e. t2_patient_1, t2_patient_2).
