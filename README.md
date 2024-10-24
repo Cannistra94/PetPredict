@@ -1,7 +1,7 @@
 # A Machine Learning Tool for MR to PET cross-modality prediction
 A tool for predicting PET parameters using MRI sequences as input. 
 
-Steps required:
+Usage:
 
 1. Create a new project directory 
 2. Create a folder in the project directory called 'images' and upload all folder containing the raw DICOM images for the analysis. Rename DICOM data folders using unique ID (i.e. t1_patient_1, t1_patient_2 ..). In case of multimodal MRI (i.e. T2 MRI) available, upload the DICOM folders in the same directory using same criteria (i.e. t2_patient_1, t2_patient_2).
@@ -43,3 +43,10 @@ Outuputs will include:
 
 
 If you've already done the preprocessing and you wish to try different models or settings you can download the script run_analysis_skip_preprocessing.py which takes same parameters as run_analysis but it skips all the processing steps.
+
+EXAMPLE USAGE:
+cd /path/to/project/directory
+
+python run_analysis 0 1.6 1 0 10 0
+
+Note: running all the pre-processing may require time, according to the number of images to be processed. Running the script without pre-processing needed will take around 10 minutes.
