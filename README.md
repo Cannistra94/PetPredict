@@ -42,11 +42,9 @@ Outuputs will include:
 -Selected radiomics features (according to best performing model) will be written to allow further analysis. Please note that even if SMOTE is applied, the total number of subjects in this output file containing the best selected features will contains one row for each subject (original data), since SMOTE is performed only during training phases and the test set is composed only by real, clinical data
 
 
-If you've already done the preprocessing and you wish to try different models or settings you can download the script run_analysis_skip_preprocessing.py which takes same parameters as run_analysis but it skips all the processing steps.
+If you've already done the preprocessing and you wish to try different models, the script run_analysis_ML_models.py will run the Machine Learning analysis direclty, taking same arguments as in the original script (run_analysis.py).
 
 EXAMPLE USAGE:
 cd /path/to/project/directory
 
 python run_analysis 0 1.6 1 0 10 0
-
-Note: running all the pre-processing may require time, according to the number of images to be processed. Running the script without pre-processing needed will take around 10 minutes.
