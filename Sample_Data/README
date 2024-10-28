@@ -1,0 +1,6 @@
+For each patient's folder, include segmentation file in .nrrd format. 
+For t1 segmentation rename file as 'patientid_segmentation.nrrd', 
+for t2 segmentation files, rename file as 't2patientid_segmentation.nrrd' as shown in the samples data inserted in the 'segmentation' folder.
+
+Note: the patientid for renaming both segmentation files and dicom folders (as shown in 'images' folder) should match the one inserted in the csv file ('patient_data.csv')
+
