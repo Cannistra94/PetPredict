@@ -1,11 +1,21 @@
-In the terminal (within radiomics_env environment) type:
+Required libraries for running the analysis:
 
-1. pip install SimpleITK
-2. pip install pandas
-3. pip install pydicom
-4. pip install numpy
-5. pip install matplotlib
-6. pip install pyradiomics
-7. pip install scikit-learn
-8. pip install imbalanced-learn
-9. pip install scipy
+import SimpleITK as sitk
+import os
+import pandas as pd
+import pydicom
+import numpy as np
+import re
+import sys
+import matplotlib.pyplot as plt
+from radiomics import featureextractor
+from sklearn.model_selection import KFold, GridSearchCV, StratifiedKFold
+from sklearn.feature_selection import SelectKBest, f_classif
+from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import accuracy_score, roc_auc_score, precision_score, recall_score, f1_score, roc_curve
+from scipy import interp
+from sklearn.linear_model import LogisticRegression
+from imblearn.over_sampling import SMOTE
+from sklearn.linear_model import LogisticRegression
+from sklearn.svm import SVC
+from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier
