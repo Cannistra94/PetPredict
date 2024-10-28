@@ -20,7 +20,6 @@ from sklearn.metrics import accuracy_score, roc_auc_score, precision_score, reca
 from scipy import interp
 from sklearn.linear_model import LogisticRegression
 from imblearn.over_sampling import SMOTE
-from sklearn.linear_model import LogisticRegression
 from sklearn.svm import SVC
 from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier
 
