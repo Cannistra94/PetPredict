@@ -1,0 +1,1 @@
+For each patient's folder, include segmentation file in .nrrd format. For t1 segmentation rename file as 'patientid_segmentation.nrrd', for t2 segmentation files, rename file as 't2patientid_segmentation.nrrd'
