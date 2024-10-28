@@ -23,7 +23,55 @@ from imblearn.over_sampling import SMOTE
 from sklearn.svm import SVC
 from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier
 
-# In[14]:
+threshold = 0.0
+smote_flag = 0
+model_flag= 0
+num_folds=0
+flag_t2=0
+transfer_learning=0
+
+def main():
+    global flag_t2, threshold, smote_flag, model_flag, num_folds, transfer_learning
+
+    # Check if the correct number of arguments are provided
+    if len(sys.argv) != 7:
+        print("Usage: python run_analysis.py <t2> (1 if T2 sequence is available, 0 otherwise) <threshold> (to binarize PET parameters) <smote_flag(0 for NO SMOTE, 1 for SMOTE)> <model_flag(0 for LogisticRegression, 1 for SupportVectorMachine, 2 for RandomForest, 3 for Adaboost)> <Number of Folds for Cross-Validation> <Transfer_Learning(0 for train and test on user data, 1 for Transfer Learning)>")
+        sys.exit(1)
+
+    # Extract parameters from command-line arguments
+    flag_t2=int(sys.argv[1])
+    threshold = float(sys.argv[2])
+    smote_flag = int(sys.argv[3])
+    model_flag = int(sys.argv[4])
+    num_folds= int(sys.argv[5])
+    transfer_learning= int(sys.argv[6])
+
+    # Check the condition for transfer learning
+    if transfer_learning == 1 and model_flag != 0:
+        print("Error: Transfer learning (transfer_learning=1) can only be used with Logistic Regression (model_flag=0).")
+        sys.exit(1)
+    
+    print("Flag T2", flag_t2)
+    print("Threshold for PET index:", threshold)
+    print("SMOTE flag:", smote_flag)
+    print("Model flag:", model_flag)
+    print("Number of Folds for Cross-Validation:", num_folds)
+    print("Transferl Learning (0 for no TL, 1 for TL):", transfer_learning)
+
+if __name__ == "__main__":
+    main()
+
+if (transfer_learning!=0):
+    # Load the best selected column
+    with open(f'best_selected_columns_{model_flag}_T1.pkl', 'rb') as file:
+        best_selected_columns_t1 = pickle.load(file)
+
+if (transfer_learning!=0 and flag_t2 == 1):
+    # Load the best selected column for T2
+    with open(f'best_selected_columns_{model_flag}_T2.pkl', 'rb') as file:
+        best_selected_columns_t2 = pickle.load(file)
+    with open(f'best_selected_columns_{model_flag}_T1_T2.pkl', 'rb') as file:
+        best_selected_columns_t1t2 = pickle.load(file)
 
 
 # Read the CSV file
