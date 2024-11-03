@@ -1,16 +1,9 @@
-1. Go to the Anaconda Distribution page (https://www.anaconda.com/download).
-2. Select the installer for your operating system (Windows, macOS, or Linux).
-3. Choose the Python version you want to use (most users should choose the latest version).
-4. Locate the downloaded .exe file and double-click it to run the installer
-5. Follow the Installation Instructions
+Go to the Anaconda Distribution page (https://www.anaconda.com/download).
+Follow instructions for installation.
 
-On Windows: Open the Anaconda Prompt from the Start Menu.
-On macOS and Linux: Open the Terminal
-
-Type:
+Create environment once installed:
 1. conda create --name radiomics_env python=3.8
 2. conda activate radiomics_env
-3. python --version #check if installed version is 3.8.19, if not try to create again enviornment by typing conda create --name radiomics_env python=3.8.19 and follow from step2
-4. cd <path_to_project_directory>
+3. cd <path_to_project_directory>
+4. Install required packages as listed in 'Libraries'
 
-Follow Instructions in 'Libraries' to install the required packages
