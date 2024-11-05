@@ -154,7 +154,7 @@ for index, row in df.iterrows():
         data_rows.append({
             'Patient ID': patient_id,
             '3D Shape': shape_text,
-            'Patient Name': str(patient_name) if patient_name else "Not available",
+            'Patient Id': str(patient_name) if patient_name else "Not available",
             'Institution': institution_name if institution_name else "Not available",
             'Study Date': study_date if study_date else "No date found",
             'Modality': modality if modality else "Not available",
@@ -202,15 +202,7 @@ output_csv_path = 'output_patient_data_summary.csv'
 results_df.to_csv(output_csv_path, index=False)
 
 
-
-
-
-
-
-# In[9]:
-
-
-#DICOM TO NIFTI
+#DICOM TO NIFTI conversion
 
 def convert_dicom_to_nifti(dicom_folder, output_file):
     # Read the DICOM series
@@ -244,11 +236,7 @@ for index, row in df.iterrows():
     convert_dicom_to_nifti(dicom_folder, nifti_file)
 
 
-# In[10]:
-
-
-#DICOM TO NRRD
-
+#DICOM TO NRRD conversion
 
 def convert_dicom_to_nrrd(dicom_folder, output_file):
     # Read the DICOM series
@@ -280,10 +268,6 @@ for index, row in df.iterrows():
     nrrd_file = os.path.join(nrrd_directory, patient_id + '.nrrd')
 
     convert_dicom_to_nrrd(dicom_folder, nrrd_file)
-
-
-# In[12]:
-
 
 
 def get_image_type(filename):
@@ -338,10 +322,6 @@ image_info_df = pd.DataFrame(image_info_list)
 # Write the results to a CSV file
 output_csv_path = 'image_info_output.csv'
 image_info_df.to_csv(output_csv_path, index=False)
-
-
-# In[16]:
-
 
 
 def save_figure(image, filename):
@@ -538,8 +518,6 @@ if flag_t2==1:
     radiomics_features_df.to_csv('radiomics_features_output_t2.csv', index=False)
     with open(output_txt_path, "a") as file:
         file.write("T2 Features successfully extracted and stored in radiomics_features_output_t2.csv\n")
-# In[6]:
-
 
 #Shape informations
 # Load the radiomics features CSV file
@@ -657,10 +635,7 @@ if flag_t2==1:
 
 
 
-# In[14]:
-
-
-# Read the CSV file
+# Read the T1 features CSV file
 t1_csv_path = 'features_t1_with_target_clean.csv'
 data_t1 = pd.read_csv(t1_csv_path)
 
@@ -675,9 +650,6 @@ output_txt_path = "output.txt"
 with open(output_txt_path, "a") as file:
     file.write(f"Shape of target T1: {target_t1.shape}\n")
     file.write(f"Shape of predictors T1: {predictors_t1.shape}\n")
-
-
-# In[15]:
 
 
 
@@ -901,10 +873,7 @@ if (transfer_learning==0):
     
     # Save the best feature columns to a CSV file
     best_feature_data.to_csv(f'best_feature_data_model_{model_flag}_T1.csv', index=False)
-    # Save the best selected columns
-  #  with open(f'best_selected_columns_{model_flag}_T1.pkl', 'wb') as file:
-   #     pickle.dump(best_selected_columns, file)
-
+    
 
    #Running Analysis for T2 sequece if available
 
@@ -1124,8 +1093,7 @@ if (transfer_learning==0):
     
         # Save the best feature columns to a CSV file
         best_feature_data.to_csv(f'best_feature_data_model_{model_flag}_T2.csv', index=False)
-      #  with open(f'best_selected_columns_{model_flag}_T2.pkl', 'wb') as file:
-       #     pickle.dump(best_selected_columns, file)
+      
 
     #Running analysis using the combination of T1 and T2 sequences
     # Read the CSV file
@@ -1339,16 +1307,15 @@ if (transfer_learning==0):
     
         # Save the best feature columns to a CSV file
         best_feature_data.to_csv(f'best_feature_data_model_{model_flag}_T1_T2.csv', index=False)
-       # with open(f'best_selected_columns_{model_flag}_T1_T2.pkl', 'wb') as file:
-        #    pickle.dump(best_selected_columns, file)
+       
 
 #if transfer learning option has been selected use the trained model
 else:
     with open(f'best_selected_columns_{model_flag}_T1.pkl', 'rb') as file:
         selected_columns = pickle.load(file)
     pretrained_model = joblib.load('logistic_regression_model_T1.joblib')
-    # Extract data from the selected columns
-
+    
+    # Extract the selected columns from the data
     X_selected = predictors_t1[selected_columns]
     with open(output_txt_path, "a") as file:
         
