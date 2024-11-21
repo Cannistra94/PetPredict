@@ -74,7 +74,7 @@ if (transfer_learning!=0 and flag_t2 == 1):
         best_selected_columns_t1t2 = pickle.load(file)
 
 
-# Read the CSV file
+# Read the T1 features CSV file
 t1_csv_path = 'features_t1_with_target_clean.csv'
 data_t1 = pd.read_csv(t1_csv_path)
 
@@ -89,9 +89,6 @@ output_txt_path = "output.txt"
 with open(output_txt_path, "a") as file:
     file.write(f"Shape of target T1: {target_t1.shape}\n")
     file.write(f"Shape of predictors T1: {predictors_t1.shape}\n")
-
-
-# In[15]:
 
 
 
@@ -160,14 +157,7 @@ else:
 
 if (transfer_learning==0):
     for k_best_features in k_range:
-        # Feature selection using SelectKBest
-        selector = SelectKBest(score_func=f_classif, k=k_best_features)
-        X_selected = selector.fit_transform(predictors_t1, target_t1)
-        selected_indices = selector.get_support(indices=True)
-        selected_columns = predictors_t1.columns[selected_indices]
-
-        selected_data = pd.DataFrame(X_selected, columns=selected_columns)
-    
+            
         # Initialize model and parameter grid based on model_flag
         if model_flag == 0:
             model = LogisticRegression()
@@ -200,8 +190,8 @@ if (transfer_learning==0):
         all_tpr = []
         fold_concatenated_data = pd.DataFrame()
 
-        for train_index, test_index in kf.split(X_selected, target_t1):
-            X_train, X_test = X_selected[train_index], X_selected[test_index]
+        for train_index, test_index in kf.split(predictors_t1, target_t1):
+            X_train, X_test = predictors_t1.iloc[train_index,:], predictors_t1.iloc[test_index,:]
             y_train, y_test = target_t1.iloc[train_index], target_t1.iloc[test_index]
         
             if smote_flag == 1:
@@ -212,6 +202,14 @@ if (transfer_learning==0):
             scaler = StandardScaler()
             X_train_normalized = scaler.fit_transform(X_train_resampled)
             X_test_normalized = scaler.transform(X_test)
+            # Feature selection using SelectKBest
+            selector = SelectKBest(score_func=f_classif, k=k_best_features)
+            X_train_normalized = selector.fit_transform(X_train_normalized, y_train_resampled)
+            X_test_normalized = selector.transform(X_test_normalized)
+            selected_indices = selector.get_support(indices=True)
+            selected_columns = predictors_t1.columns[selected_indices]
+
+            selected_data = pd.DataFrame(X_train_normalized, columns=selected_columns)
         
             grid_search.fit(X_train_normalized, y_train_resampled)
         
@@ -315,10 +313,7 @@ if (transfer_learning==0):
     
     # Save the best feature columns to a CSV file
     best_feature_data.to_csv(f'best_feature_data_model_{model_flag}_T1.csv', index=False)
-    # Save the best selected columns
-  #  with open(f'best_selected_columns_{model_flag}_T1.pkl', 'wb') as file:
-   #     pickle.dump(best_selected_columns, file)
-
+    
 
    #Running Analysis for T2 sequece if available
 
@@ -387,13 +382,7 @@ if (transfer_learning==0):
     
     
         for k_best_features in k_range:
-            # Feature selection using SelectKBest
-            selector = SelectKBest(score_func=f_classif, k=k_best_features)
-            X_selected_t2 = selector.fit_transform(predictors_t2, target_t2)
-            selected_indices = selector.get_support(indices=True)
-            selected_columns = predictors_t2.columns[selected_indices]
-
-            selected_data = pd.DataFrame(X_selected_t2, columns=selected_columns)
+            
     
             # Initialize model and parameter grid based on model_flag
             if model_flag == 0:
@@ -426,8 +415,8 @@ if (transfer_learning==0):
             all_fpr = []
             all_tpr = []
             fold_concatenated_data = pd.DataFrame()
-            for train_index, test_index in kf.split(X_selected_t2, target_t2):
-                X_train, X_test = X_selected_t2[train_index], X_selected_t2[test_index]
+            for train_index, test_index in kf.split(predictors_t2, target_t2):
+                X_train, X_test = predictors_t2.iloc[train_index,:], predictors_t2.iloc[test_index,:]
                 y_train, y_test = target_t2.iloc[train_index], target_t2.iloc[test_index]
         
                 if smote_flag == 1:
@@ -438,7 +427,14 @@ if (transfer_learning==0):
                 scaler = StandardScaler()
                 X_train_normalized = scaler.fit_transform(X_train_resampled)
                 X_test_normalized = scaler.transform(X_test)
-        
+                # Feature selection using SelectKBest
+                selector = SelectKBest(score_func=f_classif, k=k_best_features)
+                X_train_normalized = selector.fit_transform(X_train_normalized, y_train_resampled)
+                X_test_normalized = selector.transform(X_test_normalized)
+                selected_indices = selector.get_support(indices=True)
+                selected_columns = predictors_t2.columns[selected_indices]
+
+                selected_data = pd.DataFrame(X_train_normalized, columns=selected_columns)
                 grid_search.fit(X_train_normalized, y_train_resampled)
         
                 best_model = grid_search.best_estimator_
@@ -538,8 +534,7 @@ if (transfer_learning==0):
     
         # Save the best feature columns to a CSV file
         best_feature_data.to_csv(f'best_feature_data_model_{model_flag}_T2.csv', index=False)
-      #  with open(f'best_selected_columns_{model_flag}_T2.pkl', 'wb') as file:
-       #     pickle.dump(best_selected_columns, file)
+      
 
     #Running analysis using the combination of T1 and T2 sequences
     # Read the CSV file
@@ -602,13 +597,7 @@ if (transfer_learning==0):
 
     
         for k_best_features in k_range:
-            # Feature selection using SelectKBest
-            selector = SelectKBest(score_func=f_classif, k=k_best_features)
-            X_selected_comb = selector.fit_transform(combined_data, target_combined)
-            selected_indices = selector.get_support(indices=True)
-            selected_columns = combined_data.columns[selected_indices]
-
-            selected_data = pd.DataFrame(X_selected_comb, columns=selected_columns)
+            
     
             # Initialize model and parameter grid based on model_flag
             if model_flag == 0:
@@ -641,8 +630,8 @@ if (transfer_learning==0):
             all_fpr = []
             all_tpr = []
             fold_concatenated_data = pd.DataFrame()
-            for train_index, test_index in kf.split(X_selected_comb, target_combined):
-                X_train, X_test = X_selected_comb[train_index], X_selected_comb[test_index]
+            for train_index, test_index in kf.split(combined_data, target_combined):
+                X_train, X_test = combined_data.iloc[train_index,:], combined_data.iloc[test_index,:]
                 y_train, y_test = target_combined.iloc[train_index], target_combined.iloc[test_index]
         
                 if smote_flag == 1:
@@ -653,7 +642,13 @@ if (transfer_learning==0):
                 scaler = StandardScaler()
                 X_train_normalized = scaler.fit_transform(X_train_resampled)
                 X_test_normalized = scaler.transform(X_test)
-        
+                # Feature selection using SelectKBest
+                selector = SelectKBest(score_func=f_classif, k=k_best_features)
+                X_train_normalized = selector.fit_transform(X_train_normalized, y_train_resampled)
+                selected_indices = selector.get_support(indices=True)
+                selected_columns = combined_data.columns[selected_indices]
+
+                selected_data = pd.DataFrame(X_train_normalized, columns=selected_columns)
                 grid_search.fit(X_train_normalized, y_train_resampled)
         
                 best_model = grid_search.best_estimator_
@@ -753,8 +748,6 @@ if (transfer_learning==0):
     
         # Save the best feature columns to a CSV file
         best_feature_data.to_csv(f'best_feature_data_model_{model_flag}_T1_T2.csv', index=False)
-       # with open(f'best_selected_columns_{model_flag}_T1_T2.pkl', 'wb') as file:
-        #    pickle.dump(best_selected_columns, file)
 
 #if transfer learning option has been selected use the trained model
 else:
