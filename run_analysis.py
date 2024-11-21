@@ -718,14 +718,7 @@ else:
 
 if (transfer_learning==0):
     for k_best_features in k_range:
-        # Feature selection using SelectKBest
-        selector = SelectKBest(score_func=f_classif, k=k_best_features)
-        X_selected = selector.fit_transform(predictors_t1, target_t1)
-        selected_indices = selector.get_support(indices=True)
-        selected_columns = predictors_t1.columns[selected_indices]
-
-        selected_data = pd.DataFrame(X_selected, columns=selected_columns)
-    
+            
         # Initialize model and parameter grid based on model_flag
         if model_flag == 0:
             model = LogisticRegression()
