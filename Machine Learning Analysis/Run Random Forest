@@ -138,6 +138,12 @@ for k_best_features in k_range:
         best_fpr = mean_fpr
         best_tpr = mean_tpr
         
+
+# Save best selected columns to the output file
+with open(output_txt_path, "a") as file:
+    file.write(f"Best selected features T1 sequence - Model ({model_flag}):\n")
+    for col in best_selected_columns:
+        file.write(f"{col}\n")
 # Plot ROC curve
 plt.figure(figsize=(8, 6))
 plt.plot(mean_fpr, mean_tpr, color='b', lw=2, label=f'Mean ROC AUC = {best_roc_auc:.2f}')
