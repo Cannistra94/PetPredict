@@ -43,10 +43,8 @@ best_sensitivity = 0.0
 best_precision = 0.0
 best_f1 = 0.0
 best_roc_auc = 0.0
-# Initialize an empty list to store the best feature columns
-best_feature_data = pd.DataFrame()
 best_hyperparameters = {}
-concatenated_data = pd.DataFrame()
+
 
 random_forest_param_grid = {
     'n_estimators': [100, 200, 300],
@@ -110,9 +108,7 @@ for k_best_features in k_range:
         precisions.append(precision_score(y_test, y_pred))
         f1_scores.append(f1_score(y_test, y_pred))
         roc_aucs.append(roc_auc_score(y_test, y_proba))
-        selected_data_with_label = pd.concat([pd.DataFrame(X_test, columns=selected_columns).reset_index(drop=True),
-                                              pd.DataFrame(y_test.values, columns=['Target']).reset_index(drop=True)], axis=1)
-        fold_concatenated_data = pd.concat([fold_concatenated_data, selected_data_with_label], ignore_index=True)
+        
     average_accuracy = np.mean(accuracies)
     average_sensitivity = np.mean(sensitivities)
     average_specificity = np.mean(specificities)
@@ -139,12 +135,9 @@ for k_best_features in k_range:
         best_precision = average_precision
         best_f1 = average_f1
         best_accuracy = average_accuracy
-        best_feature_data = fold_concatenated_data.copy()
         best_fpr = mean_fpr
         best_tpr = mean_tpr
-        selected_data_with_label = pd.concat([pd.DataFrame(X_test, columns=selected_columns).reset_index(drop=True), 
-                                              pd.DataFrame(y_test.values, columns=['Target']).reset_index(drop=True)], axis=1)
-        concatenated_data = pd.concat([concatenated_data, selected_data_with_label], ignore_index=True)
+        
 # Plot ROC curve
 plt.figure(figsize=(8, 6))
 plt.plot(mean_fpr, mean_tpr, color='b', lw=2, label=f'Mean ROC AUC = {best_roc_auc:.2f}')
@@ -185,6 +178,3 @@ with open(output_txt_path, "a") as file:
 with open(output_txt_path, "a") as file:
     file.write(f"ROC_AUC plots T1 sequence - Model (RF) are saved in roc_auc_plots folder\n")
     file.write(f"Best features T1 sequence - Model (RF) selected are stored in best_feature_data_model_RF_T1.csv\n")
-    
-# Save the best feature columns to a CSV file
-best_feature_data.to_csv(f'best_feature_data_model_RF_T1.csv', index=False)
