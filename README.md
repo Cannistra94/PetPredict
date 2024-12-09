@@ -37,8 +37,7 @@ Outuputs will include:
 -Intermediate outputs will be written in 'output.txt' to provide confirmation of succesfull operations
 -Cross-Validated results (according to number of K inserted as input) such as Accuracy, Specificity, Sensitivity, Precision, F1, ROC AUC
 -ROC curve plots for the best model
--Selected radiomics features (according to best performing model) will be written to allow further analysis. Please note that even if SMOTE is applied, the total number of subjects in this output file containing the best selected features will contains one row for each subject (original data), since SMOTE is performed only during training phases and the test set is composed only by real, clinical data
-
+-Selected radiomics features (according to best performing model) will be written to the output txt file. 
 
 If you've already done the preprocessing and you wish to try different models, the script run_analysis_ML_models.py will run the Machine Learning analysis direclty, taking same arguments as in the original script (run_analysis.py).
 
