@@ -669,10 +669,8 @@ best_sensitivity = 0.0
 best_precision = 0.0
 best_f1 = 0.0
 best_roc_auc = 0.0
-# Initialize an empty list to store the best feature columns
-best_feature_data = pd.DataFrame()
 best_hyperparameters = {}
-concatenated_data = pd.DataFrame()
+
 
 # Define parameter grids for each model. Add or remove to personalize parameters
 logistic_regression_param_grid = {
@@ -746,10 +744,9 @@ if (transfer_learning==0):
         precisions = []
         f1_scores = []
         roc_aucs = []
-    
         all_fpr = []
         all_tpr = []
-        fold_concatenated_data = pd.DataFrame()
+        
 
         for train_index, test_index in kf.split(predictors_t1, target_t1):
             X_train, X_test = predictors_t1.iloc[train_index,:], predictors_t1.iloc[test_index,:]
@@ -795,9 +792,7 @@ if (transfer_learning==0):
             precisions.append(precision_score(y_test, y_pred))
             f1_scores.append(f1_score(y_test, y_pred))
             roc_aucs.append(roc_auc_score(y_test, y_proba))
-            selected_data_with_label = pd.concat([pd.DataFrame(X_test, columns=selected_columns).reset_index(drop=True),
-                                              pd.DataFrame(y_test.values, columns=['Target']).reset_index(drop=True)], axis=1)
-            fold_concatenated_data = pd.concat([fold_concatenated_data, selected_data_with_label], ignore_index=True)
+            
         average_accuracy = np.mean(accuracies)
         average_sensitivity = np.mean(sensitivities)
         average_specificity = np.mean(specificities)
@@ -824,13 +819,15 @@ if (transfer_learning==0):
             best_precision = average_precision
             best_f1 = average_f1
             best_accuracy = average_accuracy
-            best_feature_data = fold_concatenated_data.copy()
             best_fpr = mean_fpr
             best_tpr = mean_tpr
             best_selected_columns = selected_columns.tolist()
-            selected_data_with_label = pd.concat([pd.DataFrame(X_test, columns=selected_columns).reset_index(drop=True), 
-                                              pd.DataFrame(y_test.values, columns=['Target']).reset_index(drop=True)], axis=1)
-            concatenated_data = pd.concat([concatenated_data, selected_data_with_label], ignore_index=True)
+
+    # Save best selected columns to the output file
+    with open(output_txt_path, "a") as file:
+        file.write(f"Best selected features T1 sequence - Model ({model_flag}):\n")
+        for col in best_selected_columns:
+            file.write(f"{col}\n")
     # Plot ROC curve
     plt.figure(figsize=(8, 6))
     plt.plot(mean_fpr, mean_tpr, color='b', lw=2, label=f'Mean ROC AUC = {best_roc_auc:.2f}')
@@ -872,8 +869,6 @@ if (transfer_learning==0):
         file.write(f"ROC_AUC plots T1 sequence - Model ({model_flag}) are saved in roc_auc_plots folder\n")
         file.write(f"Best features T1 sequence - Model ({model_flag}) selected are stored in best_feature_data_model_{model_flag}_T1.csv\n")
     
-    # Save the best feature columns to a CSV file
-    best_feature_data.to_csv(f'best_feature_data_model_{model_flag}_T1.csv', index=False)
     
 
    #Running Analysis for T2 sequece if available
@@ -910,10 +905,8 @@ if (transfer_learning==0):
         best_precision = 0.0
         best_f1 = 0.0
         best_roc_auc = 0.0
-        # Initialize an empty list to store the best feature columns
-        best_feature_data = pd.DataFrame()
         best_hyperparameters = {}
-        concatenated_data = pd.DataFrame()
+        
 
         # Define parameter grids for each model. Add or remove to personalize parameters
         logistic_regression_param_grid = {
@@ -1019,9 +1012,7 @@ if (transfer_learning==0):
                 precisions.append(precision_score(y_test, y_pred))
                 f1_scores.append(f1_score(y_test, y_pred))
                 roc_aucs.append(roc_auc_score(y_test, y_proba))
-                selected_data_with_label = pd.concat([pd.DataFrame(X_test, columns=selected_columns).reset_index(drop=True),
-                                              pd.DataFrame(y_test.values, columns=['Target']).reset_index(drop=True)], axis=1)
-                fold_concatenated_data = pd.concat([fold_concatenated_data, selected_data_with_label], ignore_index=True)
+                
             average_accuracy = np.mean(accuracies)
             average_sensitivity = np.mean(sensitivities)
             average_specificity = np.mean(specificities)
@@ -1048,10 +1039,15 @@ if (transfer_learning==0):
                 best_precision = average_precision
                 best_f1 = average_f1
                 best_accuracy = average_accuracy
-                best_feature_data = fold_concatenated_data.copy()
                 best_fpr = mean_fpr
                 best_tpr = mean_tpr
                 best_selected_columns = selected_columns.tolist()
+        
+        with open(output_txt_path, "a") as file:
+        file.write(f"Best selected features T2 sequence - Model ({model_flag}):\n")
+        for col in best_selected_columns:
+            file.write(f"{col}\n")
+            
         # Plot ROC curve
         plt.figure(figsize=(8, 6))
         plt.plot(mean_fpr, mean_tpr, color='b', lw=2, label=f'Mean ROC AUC -T2= {best_roc_auc:.2f}')
@@ -1093,9 +1089,7 @@ if (transfer_learning==0):
             file.write(f"ROC_AUC plots -T2 sequence - Model ({model_flag}) are saved in roc_auc_plots folder\n")
             file.write(f"Best features -T2 sequence  - Model ({model_flag}) selected are stored in best_feature_data_model_{model_flag}_T2.csv\n")
     
-        # Save the best feature columns to a CSV file
-        best_feature_data.to_csv(f'best_feature_data_model_{model_flag}_T2.csv', index=False)
-      
+             
 
     #Running analysis using the combination of T1 and T2 sequences
     # Read the CSV file
@@ -1126,11 +1120,8 @@ if (transfer_learning==0):
         best_precision = 0.0
         best_f1 = 0.0
         best_roc_auc = 0.0
-        # Initialize an empty list to store the best feature columns
-        best_feature_data = None
         best_hyperparameters = {}
-        concatenated_data = pd.DataFrame()
-
+        
         # Define parameter grids for each model. Add or remove to personalize parameters
         logistic_regression_param_grid = {
         'C': [0.1, 0.5, 1, 3, 5, 10, 20],
@@ -1233,9 +1224,7 @@ if (transfer_learning==0):
                 precisions.append(precision_score(y_test, y_pred))
                 f1_scores.append(f1_score(y_test, y_pred))
                 roc_aucs.append(roc_auc_score(y_test, y_proba))
-                selected_data_with_label = pd.concat([pd.DataFrame(X_test, columns=selected_columns).reset_index(drop=True),
-                                              pd.DataFrame(y_test.values, columns=['Target']).reset_index(drop=True)], axis=1)
-                fold_concatenated_data = pd.concat([fold_concatenated_data, selected_data_with_label], ignore_index=True)
+                
             average_accuracy = np.mean(accuracies)
             average_sensitivity = np.mean(sensitivities)
             average_specificity = np.mean(specificities)
@@ -1262,10 +1251,14 @@ if (transfer_learning==0):
                 best_precision = average_precision
                 best_f1 = average_f1
                 best_accuracy = average_accuracy
-                best_feature_data = fold_concatenated_data.copy()
                 best_fpr = mean_fpr
                 best_tpr = mean_tpr
                 best_selected_columns = selected_columns.tolist()
+        
+        with open(output_txt_path, "a") as file:
+        file.write(f"Best selected features T1+T2 sequence - Model ({model_flag}):\n")
+        for col in best_selected_columns:
+            file.write(f"{col}\n")
         # Plot ROC curve
         plt.figure(figsize=(8, 6))
         plt.plot(mean_fpr, mean_tpr, color='b', lw=2, label=f'Mean ROC AUC -combined_data (T1+T2)= {best_roc_auc:.2f}')
@@ -1348,16 +1341,12 @@ else:
         scaler = StandardScaler()
         X_train_normalized = scaler.fit_transform(X_train_resampled)
         X_test_normalized = scaler.transform(X_test)
-        
-        
-        
+               
         pretrained_model.fit(X_train_normalized, y_train_resampled)
 
         y_pred = pretrained_model.predict(X_test_normalized)
         y_proba = pretrained_model.predict_proba(X_test_normalized)[:, 1]
-        
-        
-        
+               
         fpr, tpr, _ = roc_curve(y_test, y_proba)
         all_fpr.append(fpr)
         all_tpr.append(tpr)
@@ -1369,9 +1358,7 @@ else:
         precisions.append(precision_score(y_test, y_pred))
         f1_scores.append(f1_score(y_test, y_pred))
         roc_aucs.append(roc_auc_score(y_test, y_proba))
-        selected_data_with_label = pd.concat([pd.DataFrame(X_test, columns=selected_columns).reset_index(drop=True),
-                                          pd.DataFrame(y_test.values, columns=['Target']).reset_index(drop=True)], axis=1)
-        fold_concatenated_data = pd.concat([fold_concatenated_data, selected_data_with_label], ignore_index=True)
+        
     average_accuracy = np.mean(accuracies)
     average_sensitivity = np.mean(sensitivities)
     average_specificity = np.mean(specificities)
@@ -1400,10 +1387,7 @@ else:
         
         best_fpr = mean_fpr
         best_tpr = mean_tpr
-        
-        selected_data_with_label = pd.concat([pd.DataFrame(X_test, columns=selected_columns).reset_index(drop=True), 
-                                              pd.DataFrame(y_test.values, columns=['Target']).reset_index(drop=True)], axis=1)
-        concatenated_data = pd.concat([concatenated_data, selected_data_with_label], ignore_index=True)
+    
     # Plot ROC curve
     plt.figure(figsize=(8, 6))
     plt.plot(mean_fpr, mean_tpr, color='b', lw=2, label=f'Mean ROC AUC = {best_roc_auc:.2f}')
@@ -1471,11 +1455,8 @@ else:
         best_precision = 0.0
         best_f1 = 0.0
         best_roc_auc = 0.0
-        # Initialize an empty list to store the best feature columns
-        best_feature_data = pd.DataFrame()
         best_hyperparameters = {}
-        concatenated_data = pd.DataFrame()
-
+        
         # Define parameter grids for each model. Add or remove to personalize parameters
         logistic_regression_param_grid = {
             'C': [0.1, 0.5, 1, 3, 5, 10, 20],
@@ -1503,8 +1484,7 @@ else:
         roc_aucs = []
         all_fpr = []
         all_tpr = []
-        fold_concatenated_data = pd.DataFrame()
-
+        
         for train_index, test_index in kf.split(X_selected, target_t2):
             X_train, X_test = X_selected.iloc[train_index], X_selected.iloc[test_index]
             y_train, y_test = target_t2.iloc[train_index], target_t2.iloc[test_index]
@@ -1517,15 +1497,10 @@ else:
             scaler = StandardScaler()
             X_train_normalized = scaler.fit_transform(X_train_resampled)
             X_test_normalized = scaler.transform(X_test)
-        
-        
-        
             pretrained_model.fit(X_train_normalized, y_train_resampled)
 
             y_pred = pretrained_model.predict(X_test_normalized)
             y_proba = pretrained_model.predict_proba(X_test_normalized)[:, 1]
-        
-        
         
             fpr, tpr, _ = roc_curve(y_test, y_proba)
             all_fpr.append(fpr)
@@ -1538,9 +1513,7 @@ else:
             precisions.append(precision_score(y_test, y_pred))
             f1_scores.append(f1_score(y_test, y_pred))
             roc_aucs.append(roc_auc_score(y_test, y_proba))
-            selected_data_with_label = pd.concat([pd.DataFrame(X_test, columns=selected_columns).reset_index(drop=True),
-                                          pd.DataFrame(y_test.values, columns=['Target']).reset_index(drop=True)], axis=1)
-            fold_concatenated_data = pd.concat([fold_concatenated_data, selected_data_with_label], ignore_index=True)
+            
         average_accuracy = np.mean(accuracies)
         average_sensitivity = np.mean(sensitivities)
         average_specificity = np.mean(specificities)
@@ -1569,9 +1542,7 @@ else:
             best_fpr = mean_fpr
             best_tpr = mean_tpr
         
-        selected_data_with_label = pd.concat([pd.DataFrame(X_test, columns=selected_columns).reset_index(drop=True), 
-                                              pd.DataFrame(y_test.values, columns=['Target']).reset_index(drop=True)], axis=1)
-        concatenated_data = pd.concat([concatenated_data, selected_data_with_label], ignore_index=True)
+        
         # Plot ROC curve
         plt.figure(figsize=(8, 6))
         plt.plot(mean_fpr, mean_tpr, color='b', lw=2, label=f'Mean ROC AUC = {best_roc_auc:.2f}')
@@ -1584,9 +1555,6 @@ else:
         plt.ylabel('True Positive Rate')
         plt.title('Receiver Operating Characteristic (ROC) Curve')
         plt.legend(loc='lower right')
-
-
-        # Save plot to new directory
 
         # Directory
         directory = "roc_auc_plots"
@@ -1608,7 +1576,6 @@ else:
             file.write(f"Best average F1-score T2 sequence (with transfer learning) - Model ({model_flag}): {best_f1:.2f} ± {std_f1:.2f}\n")
             file.write(f"Best average ROC AUC T2 sequence (with transfer learning) - Model ({model_flag}): {best_roc_auc:.2f} ± {std_roc_auc:.2f}\n")
         
-        #-----------------------------------#
         #Running on multimodal t1+t2 data
         target_combined = data_t1['Target']
 
@@ -1635,11 +1602,7 @@ else:
         best_precision = 0.0
         best_f1 = 0.0
         best_roc_auc = 0.0
-        # Initialize an empty list to store the best feature columns
-        best_feature_data = None
         best_hyperparameters = {}
-        concatenated_data = pd.DataFrame()
-
         # Define parameter grids for each model. Add or remove to personalize parameters
         logistic_regression_param_grid = {
         'C': [0.1, 0.5, 1, 3, 5, 10, 20],
@@ -1671,16 +1634,11 @@ else:
             scaler = StandardScaler()
             X_train_normalized = scaler.fit_transform(X_train_resampled)
             X_test_normalized = scaler.transform(X_test)
-        
-        
-        
             pretrained_model.fit(X_train_normalized, y_train_resampled)
 
             y_pred = pretrained_model.predict(X_test_normalized)
             y_proba = pretrained_model.predict_proba(X_test_normalized)[:, 1]
-        
-        
-        
+                   
             fpr, tpr, _ = roc_curve(y_test, y_proba)
             all_fpr.append(fpr)
             all_tpr.append(tpr)
@@ -1692,9 +1650,7 @@ else:
             precisions.append(precision_score(y_test, y_pred))
             f1_scores.append(f1_score(y_test, y_pred))
             roc_aucs.append(roc_auc_score(y_test, y_proba))
-            selected_data_with_label = pd.concat([pd.DataFrame(X_test, columns=selected_columns).reset_index(drop=True),
-                                          pd.DataFrame(y_test.values, columns=['Target']).reset_index(drop=True)], axis=1)
-            fold_concatenated_data = pd.concat([fold_concatenated_data, selected_data_with_label], ignore_index=True)
+            
         average_accuracy = np.mean(accuracies)
         average_sensitivity = np.mean(sensitivities)
         average_specificity = np.mean(specificities)
@@ -1720,13 +1676,9 @@ else:
             best_precision = average_precision
             best_f1 = average_f1
             best_accuracy = average_accuracy
-            best_feature_data = fold_concatenated_data.copy()
             best_fpr = mean_fpr
             best_tpr = mean_tpr
         
-        selected_data_with_label = pd.concat([pd.DataFrame(X_test, columns=selected_columns).reset_index(drop=True), 
-                                              pd.DataFrame(y_test.values, columns=['Target']).reset_index(drop=True)], axis=1)
-        concatenated_data = pd.concat([concatenated_data, selected_data_with_label], ignore_index=True)
         # Plot ROC curve
         plt.figure(figsize=(8, 6))
         plt.plot(mean_fpr, mean_tpr, color='b', lw=2, label=f'Mean ROC AUC = {best_roc_auc:.2f}')
