@@ -638,6 +638,7 @@ if (transfer_learning==0):
                 # Feature selection using SelectKBest
                 selector = SelectKBest(score_func=f_classif, k=k_best_features)
                 X_train_normalized = selector.fit_transform(X_train_normalized, y_train_resampled)
+                X_test_normalized = selector.transform(X_test_normalized)
                 selected_indices = selector.get_support(indices=True)
                 selected_columns = combined_data.columns[selected_indices]
 
