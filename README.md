@@ -1,4 +1,4 @@
-# A Machine Learning Tool for MR to PET cross-modality prediction
+# A Machine Learning Tool for MR to PET cross-modality prediction in brain imaging
 A tool for predicting PET parameters using MRI sequences as input. 
 
 Usage:
