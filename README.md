@@ -5,7 +5,7 @@ A tool for predicting PET parameters using MR sequences as input. The tool uses 
 
 
  
-Usage:
+Required steps:
 
 1. Create a new project directory 
 2. Create a folder in the project directory called 'images' and upload all folder containing the raw DICOM images for the analysis. Rename DICOM data folders using unique ID (i.e. patient001, patient002 ..). In case of multimodal MRI (i.e. T2 MRI available), upload the DICOM folders in the 'images' directory using same criteria with different nomenclature (i.e. t2patient001, t2patient002). 
@@ -17,7 +17,7 @@ Usage:
 8. Download run_analysis.py from this repository and place it in the project directory
 
    
-Usage run_analysis.py
+Usaging the tool:
 
 python run_analysis.py <flag_t2> <threshold_PET_index> <run_SMOTE> <model_flag> <num_folds> <Transfer_Learning>
 
@@ -30,7 +30,6 @@ python run_analysis.py <flag_t2> <threshold_PET_index> <run_SMOTE> <model_flag> 
 <model_flag>: select the ML model to run (0 for LogisticRegression, 1 for SupportVectorMachine, 2 for RandomForest, 3 for Adaboost)
 
 <num_folds>: select number of folds for cross validation
-
 
 Visualize Plots and Results generated in the project directory.
 
