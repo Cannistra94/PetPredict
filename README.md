@@ -1,6 +1,10 @@
 # An Explainable Machine Learning Tool for MR to PET Cross-Modality Prediction in Brain Imaging
-A tool for predicting PET parameters using MR sequences as input. The tool uses the MR images and their relative segmenation files as input, along with the corresponding numeric value of the PET metabolic parameter to be predicted.
+A tool for predicting PET parameters using MR sequences as input. The tool uses the MR images and their relative segmenation files as input, along with the corresponding numeric value of the PET metabolic parameter to be predicted. MR images undergo pre-processing procedures. The resuling images are used to extract radiomics features within the tumor zone delineated in the segmentation file. A Machine Learning (ML) model is then implemented to predict PET parameters (binarized according to clinical thresholds) using MR-derived features as input. Features importance is also extracted after ML model training stages. The following figure highlights the pipeline implemented.
 
+![Alt text](new_figure_workflow.png)
+
+
+ 
 Usage:
 
 1. Create a new project directory 
