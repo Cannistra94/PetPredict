@@ -51,4 +51,4 @@ cd /path/to/project/directory
 
 conda activate radiomics_env
 
-python run_analysis.py 0 1.6 1 0 10 0
+python run_analysis.py 0 1.6 1 0 10
