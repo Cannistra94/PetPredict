@@ -47,5 +47,7 @@ If you've already done the preprocessing and you wish to try different ML models
 
 EXAMPLE USAGE:
 cd /path/to/project/directory
+
 conda activate radiomics_env
+
 python run_analysis.py 0 1.6 1 0 10 0
