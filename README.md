@@ -14,8 +14,8 @@ Usage:
 5. Define and extract PET-parameters for each patient (such as Tumor to brain Ratio), according to the experimental settings and insert information in the second column of the csv file in a column called 'Target'. See 'Sample_Data' directory for examples on how to prepare steps 2-3-4-5.
 6. These target PET parameters will be binarized according to the given threshold (input to be inserted as input for the python script)
 7. Install all the required libraries for the analysis as listed in folder 'Environment_Setup'
-8. Download run_analysis.py from this repository and place it in project directory
-9. If you wish to apply Transfer Learning technique, download and move to project directory all the file contained in 'Transfer Learning' folder.
+8. Download run_analysis.py from this repository and place it in the project directory
+
    
 Usage run_analysis.py
 
@@ -31,9 +31,8 @@ python run_analysis.py <flag_t2> <threshold_PET_index> <run_SMOTE> <model_flag> 
 
 <num_folds>: select number of folds for cross validation
 
-<Transfer_Learning>: whether to train and test the model on user-defined MR + PET indices (code 0) or apply Transfer Learning technique (code 1), which also requires MR + PET user data, but previously trained model is used and additional training is performed for fine-tuning before testing phases. Note: Transfer Learning technique is available only if selecting Logistic Regression (LR) model as the best results were achieved with the LR model
 
-11. Visualize Plots and Results generated in the project directory.
+Visualize Plots and Results generated in the project directory.
 
 Outuputs will include:
 
@@ -41,11 +40,11 @@ Outuputs will include:
 -Intermediate outputs will be written in 'output.txt' to provide confirmation of succesfull operations
 -Cross-Validated results (according to number of K inserted as input) such as Accuracy, Specificity, Sensitivity, Precision, F1, ROC AUC
 -ROC curve plots for the best model
--Selected radiomics features (according to best performing model) will be written to the output txt file. 
+-Radiomics features importnce analysis provides insights into the most informative features for the prediction.  
 
-If you've already done the preprocessing and you wish to try different models, the script run_analysis_ML_models.py will run the Machine Learning analysis direclty, taking same arguments as in the original script (run_analysis.py).
+If you've already done the preprocessing and you wish to try different ML models, the script run_analysis_ML_models.py will run the Machine Learning analysis direclty, taking same arguments as in the original script (run_analysis.py).
 
 EXAMPLE USAGE:
 cd /path/to/project/directory
 conda activate radiomics_env
-python run_analysis 0 1.6 1 0 10 0
+python run_analysis.py 0 1.6 1 0 10 0
