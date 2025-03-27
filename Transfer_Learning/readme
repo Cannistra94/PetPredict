@@ -1,5 +1,0 @@
-The files contained in this folder must be moved to the project directory folder, in order to properly run the transfer learning technique. 
-The algorithm will take, according to the modality used to run experiments:
-
-1. the trained model to use it for additional training on the user-defined dataset
-2. the columns selected to train the best model
