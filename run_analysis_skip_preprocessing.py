@@ -283,64 +283,61 @@ if flag_t2==1:
     # Initialize variables to store best parameters
     best_k = None
     best_accuracy = 0.0
-        best_specificity = 0.0
-        best_sensitivity = 0.0
-        best_precision = 0.0
-        best_f1 = 0.0
-        best_roc_auc = 0.0
-        best_hyperparameters = {}
+    best_specificity = 0.0
+    best_sensitivity = 0.0
+    best_precision = 0.0
+    best_f1 = 0.0
+    best_roc_auc = 0.0
+    best_hyperparameters = {}
         
 
-        # Define parameter grids for each model. Add or remove to personalize parameters
-        logistic_regression_param_grid = {
+    # Define parameter grids for each model. Add or remove to personalize parameters
+    logistic_regression_param_grid = {
         'C': [0.1, 0.5, 1, 3, 5, 10, 20],
         'penalty': ['l1', 'l2'],
         'solver': [  'liblinear']
-        }
+    }
 
-        svm_param_grid = {
+    svm_param_grid = {
         'C': [0.1, 0.5, 0.7, 1, 3 ,5],
         'kernel': ['linear', 'rbf'],
         'gamma': ['scale', 'auto']
-        }
+    }
 
-        random_forest_param_grid = {
+    random_forest_param_grid = {
         'n_estimators': [100, 200, 300],
         'max_depth': [None, 10, 20, 30],
         'min_samples_split': [2, 5, 10],
         'min_samples_leaf': [1, 2, 4]
-        }
+    }
 
-        adaboost_param_grid = {
+    adaboost_param_grid = {
         'n_estimators': [50, 100, 150],
         'learning_rate': [0.01, 0.1, 1]
-        }
+    }
 
     
     
-        for k_best_features in k_range:
-            
+    # Initialize model and parameter grid based on model_flag
+    if model_flag == 0:
+        model = LogisticRegression()
+        param_grid = logistic_regression_param_grid
+    elif model_flag == 1:
+        model = SVC(probability=True)
+        param_grid = svm_param_grid
+    elif model_flag == 2:
+        model = RandomForestClassifier()
+        param_grid = random_forest_param_grid
+    elif model_flag == 3:
+        model = AdaBoostClassifier()
+        param_grid = adaboost_param_grid
+    else:
+        raise ValueError("Invalid model_flag value. Expected 0, 1, 2, or 3.")
     
-            # Initialize model and parameter grid based on model_flag
-            if model_flag == 0:
-                model = LogisticRegression()
-                param_grid = logistic_regression_param_grid
-            elif model_flag == 1:
-                model = SVC(probability=True)
-                param_grid = svm_param_grid
-            elif model_flag == 2:
-                model = RandomForestClassifier()
-                param_grid = random_forest_param_grid
-            elif model_flag == 3:
-                model = AdaBoostClassifier()
-                param_grid = adaboost_param_grid
-            else:
-                raise ValueError("Invalid model_flag value. Expected 0, 1, 2, or 3.")
+    grid_search = GridSearchCV(model, param_grid, cv=num_folds, scoring='roc_auc')
     
-            grid_search = GridSearchCV(model, param_grid, cv=num_folds, scoring='roc_auc')
-    
-            if smote_flag == 1:
-                smote = SMOTE(random_state=42)
+    if smote_flag == 1:
+        smote = SMOTE(random_state=42)
     
             accuracies = []
             sensitivities = []
