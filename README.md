@@ -3,7 +3,7 @@ A tool for predicting PET parameters using MR sequences as input. The tool uses 
 
 
 
-![Alt text](new_figure_workflow.png)
+![Alt text](tool_pipeline.png)
 
 
  
