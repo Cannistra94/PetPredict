@@ -28,14 +28,13 @@ smote_flag = 0
 model_flag= 0
 num_folds=0
 flag_t2=0
-transfer_learning=0
 
 def main():
-    global flag_t2, threshold, smote_flag, model_flag, num_folds, transfer_learning
+    global flag_t2, threshold, smote_flag, model_flag, num_folds
 
     # Check if the correct number of arguments are provided
     if len(sys.argv) != 7:
-        print("Usage: python run_analysis.py <t2> (1 if T2 sequence is available, 0 otherwise) <threshold> (to binarize PET parameters) <smote_flag(0 for NO SMOTE, 1 for SMOTE)> <model_flag(0 for LogisticRegression, 1 for SupportVectorMachine, 2 for RandomForest, 3 for Adaboost)> <Number of Folds for Cross-Validation> <Transfer_Learning(0 for train and test on user data, 1 for Transfer Learning)>")
+        print("Usage: python run_analysis.py <t2> (1 if T2 sequence is available, 0 otherwise) <threshold> (to binarize PET parameters) <smote_flag(0 for NO SMOTE, 1 for SMOTE)> <model_flag(0 for LogisticRegression, 1 for SupportVectorMachine, 2 for RandomForest, 3 for Adaboost)> <Number of Folds for Cross-Validation>")
         sys.exit(1)
 
     # Extract parameters from command-line arguments
