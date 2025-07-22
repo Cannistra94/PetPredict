@@ -1,9 +1,10 @@
 Go to the Anaconda Distribution page (https://www.anaconda.com/download).
+
 Follow instructions for installation.
 
 Create environment once installed:
 1. conda create --name radiomics_env python=3.8
 2. conda activate radiomics_env
 3. cd <path_to_project_directory>
-4. Install required packages (see 'Libraries' folder)
+4. Install required packages with: conda install numpy<1.23 pandas pydicom simpleitk matplotlib scikit-learn scipy imbalanced-learn pyradiomics -c conda-forge
 
