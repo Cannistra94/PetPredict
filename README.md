@@ -1,5 +1,5 @@
-# An Explainable Machine Learning Tool for MR to PET Cross-Modality Prediction in Brain Imaging
-A tool for predicting PET parameters using MR sequences as input. The tool uses the MR images and their relative segmenation files as input, along with the corresponding numeric value of the PET metabolic parameter to be predicted. MR images undergo pre-processing procedures. The resuling images are used to extract radiomics features within the tumor zone delineated in the segmentation file. A Machine Learning (ML) model is then implemented to predict PET parameters (binarized according to clinical thresholds) using MR-derived features as input. Features importance is also extracted after ML model training stages. The following figure highlights the pipeline implemented.
+# PetPredict: An Explainable Framework to Extract Pet Radiomic Features from Magnetic Resonances
+An analytical framework for predicting PET parameters using MR sequences as input. The tool uses the MR images and their relative segmenation files as input, along with the corresponding numeric value of the PET metabolic parameter to be predicted. MR images undergo pre-processing procedures. The resuling images are used to extract radiomics features within the tumor zone delineated in the segmentation file. A Machine Learning (ML) model is then implemented to predict PET parameters (binarized according to clinical thresholds) using MR-derived features as input. Features importance is also extracted after ML model training stages. The following figure highlights the pipeline implemented.
 
 
 
@@ -21,7 +21,7 @@ Required steps:
    
 Usaging the tool:
 
-python run_analysis.py <flag_t2> <threshold_PET_index> <run_SMOTE> <model_flag> <num_folds> <Transfer_Learning>
+python run_analysis.py <flag_t2> <threshold_PET_index> <run_SMOTE> <model_flag> <num_folds>
 
 <flag_t2>: Flag used to indicate whether T2 is available or not (1 if available, 0 otherwise). If T2 is available the tool will run analysis for single modality alone as well as their combination
 
@@ -41,7 +41,7 @@ Outuputs will include:
 -Intermediate outputs will be written in 'output.txt' to provide confirmation of succesfull operations
 -Cross-Validated results (according to number of K inserted as input) such as Accuracy, Specificity, Sensitivity, Precision, F1, ROC AUC
 -ROC curve plots for the best model
--Radiomics features importnce analysis provides insights into the most informative features for the prediction.  
+-Radiomics features importance analysis provides insights into the most informative features for the prediction.  
 
 If you've already done the preprocessing and you wish to try different ML models, the script run_analysis_ML_models.py will run the Machine Learning analysis direclty, taking same arguments as in the original script (run_analysis.py).
 
