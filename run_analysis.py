@@ -33,7 +33,7 @@ def main():
     global flag_t2, threshold, smote_flag, model_flag, num_folds
 
     # Check if the correct number of arguments are provided
-    if len(sys.argv) != 7:
+    if len(sys.argv) != 6:
         print("Usage: python run_analysis.py <t2> (1 if T2 sequence is available, 0 otherwise) <threshold> (to binarize PET parameters) <smote_flag(0 for NO SMOTE, 1 for SMOTE)> <model_flag(0 for LogisticRegression, 1 for SupportVectorMachine, 2 for RandomForest, 3 for Adaboost)> <Number of Folds for Cross-Validation>")
         sys.exit(1)
 
@@ -43,35 +43,17 @@ def main():
     smote_flag = int(sys.argv[3])
     model_flag = int(sys.argv[4])
     num_folds= int(sys.argv[5])
-    transfer_learning= int(sys.argv[6])
-
-    # Check the condition for transfer learning
-    if transfer_learning == 1 and model_flag != 0:
-        print("Error: Transfer learning (transfer_learning=1) can only be used with Logistic Regression (model_flag=0).")
-        sys.exit(1)
     
     print("Flag T2", flag_t2)
     print("Threshold for PET index:", threshold)
     print("SMOTE flag:", smote_flag)
     print("Model flag:", model_flag)
     print("Number of Folds for Cross-Validation:", num_folds)
-    print("Transferl Learning (0 for no TL, 1 for TL):", transfer_learning)
 
 if __name__ == "__main__":
     main()
 
-if (transfer_learning!=0):
-    # Load the best selected column
-    with open(f'best_selected_columns_{model_flag}_T1.pkl', 'rb') as file:
-        best_selected_columns_t1 = pickle.load(file)
-
-if (transfer_learning!=0 and flag_t2 == 1):
-    # Load the best selected column for T2
-    with open(f'best_selected_columns_{model_flag}_T2.pkl', 'rb') as file:
-        best_selected_columns_t2 = pickle.load(file)
-    with open(f'best_selected_columns_{model_flag}_T1_T2.pkl', 'rb') as file:
-        best_selected_columns_t1t2 = pickle.load(file)
-
+#STEP 1: retrieve metadata from DICOM files and create descriptive statistics of the dataset (i.e. demographics)
 # Base directory containing subfolders named after patient IDs
 base_directory = "images"
 
@@ -201,7 +183,7 @@ output_csv_path = 'output_patient_data_summary.csv'
 results_df.to_csv(output_csv_path, index=False)
 
 
-#DICOM TO NIFTI conversion
+#STEP 2a: DICOM TO NIFTI conversion
 
 def convert_dicom_to_nifti(dicom_folder, output_file):
     # Read the DICOM series
@@ -235,7 +217,7 @@ for index, row in df.iterrows():
     convert_dicom_to_nifti(dicom_folder, nifti_file)
 
 
-#DICOM TO NRRD conversion
+#STEP 2b: DICOM TO NRRD conversion
 
 def convert_dicom_to_nrrd(dicom_folder, output_file):
     # Read the DICOM series
@@ -268,7 +250,7 @@ for index, row in df.iterrows():
 
     convert_dicom_to_nrrd(dicom_folder, nrrd_file)
 
-
+#Save some information on voxel spacing and image dimensions
 def get_image_type(filename):
     try:
         image = sitk.ReadImage(filename)
@@ -346,6 +328,7 @@ def save_figure(image, filename):
     plt.savefig(filename)
     plt.close()
 
+#STEP 3: perform n4 bias field correction
 
 def n4_bias_correction(input_image_filename, output_image_filename, mask_image_filename=None, figures_directory=None):
     # Read the input image using SimpleITK
@@ -398,7 +381,7 @@ with open(output_txt_path, "a") as file:
     file.write("Figures can be found in n4_figures directory\n")
     file.write("Corrected images can be found in n4_corrected directory\n")
 
-
+#STEP 4: features extraction process - include resampling and discretization procedures implemented internally by the pyradiomics feature extractor
 # Directories
 normalized_images_dir = "n4_corrected"
 segmentation_dir = "segmentation"
@@ -466,7 +449,7 @@ else:
 
 
 # In[5]:
-
+#same procedure for T2 sequence, if available
 # PyRadiomics Feature Extractor Configuration
 # T2 features extraction
 if flag_t2==1:
@@ -518,7 +501,7 @@ if flag_t2==1:
     with open(output_txt_path, "a") as file:
         file.write("T2 Features successfully extracted and stored in radiomics_features_output_t2.csv\n")
 
-#Shape informations
+#print shape informations
 # Load the radiomics features CSV file
 radiomics_features_path = 'radiomics_features_output_t1.csv'
 radiomics_df = pd.read_csv(radiomics_features_path)
@@ -584,12 +567,13 @@ if flag_t2==1:
 
 # In[3]:
 
+#data preparation procedures for Machine Learning 
 
 # Load the merged radiomics features CSV file with the 'Target' column
 merged_output_csv_path = 'radiomics_features_t1_with_target.csv'
 merged_df = pd.read_csv(merged_output_csv_path)
 
-# Find the index of the 'original_shape_Elongation' column
+# Find the index of the 'original_shape_Elongation' column, which is the first feature
 start_feature_index = merged_df.columns.get_loc('original_shape_Elongation')
 
 # Select columns from 'original_shape_Elongation' onwards, including the 'Target' column
@@ -633,6 +617,7 @@ if flag_t2==1:
 
 
 
+#STEP 5: Machine Learning algorithms
 
 # Read the T1 features CSV file
 t1_csv_path = 'features_t1_with_target_clean.csv'
@@ -649,8 +634,6 @@ output_txt_path = "output.txt"
 with open(output_txt_path, "a") as file:
     file.write(f"Shape of target T1: {target_t1.shape}\n")
     file.write(f"Shape of predictors T1: {predictors_t1.shape}\n")
-
-
 
 #threshold = 1.6 # user defined, modify according to experimental settings
 target_t1 = target_t1.apply(lambda x: 1 if x > threshold else 0)
