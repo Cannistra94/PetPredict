@@ -1,8 +1,2 @@
-""After having performed steps 1-4 in 'Anaconda_Setup' ""
-
-Run:
-conda install numpy<1.23 pandas pydicom simpleitk matplotlib \
-scikit-learn scipy imbalanced-learn pyradiomics -c conda-forge
-
 
 
